@@ -1,0 +1,324 @@
+{% extends 'base/admin.html' %}
+{% load static %}
+
+{% block admin_body %}
+    <style>
+        .urls-container {
+            padding: 30px 0;
+        }
+
+        .urls-header {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            text-align: center;
+        }
+
+        .urls-header h3 {
+            font-size: 28px;
+            font-weight: 700;
+            color: #1e293b;
+            margin: 0;
+        }
+
+        .stream-card {
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            margin-bottom: 24px;
+            transition: all 0.3s ease;
+        }
+
+        .stream-card:hover {
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+            transform: translateY(-4px);
+        }
+
+        .stream-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .stream-title {
+            color: white;
+            font-size: 18px;
+            font-weight: 600;
+            margin: 0;
+            flex: 1;
+        }
+
+        .stream-benefit {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 6px 16px;
+            border-radius: 20px;
+            color: white;
+            font-weight: 600;
+            margin-right: 10px;
+        }
+
+        .delete-btn {
+            background: rgba(239, 68, 68, 0.9);
+            border: none;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .delete-btn:hover {
+            background: #ef4444;
+            transform: scale(1.1);
+        }
+
+        .stream-body {
+            padding: 24px;
+        }
+
+        .link-input-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 16px;
+        }
+
+        .link-input {
+            flex: 1;
+            border: 2px solid #e2e8f0;
+            padding: 14px 18px;
+            border-radius: 12px;
+            font-size: 14px;
+            font-family: 'Courier New', monospace;
+            background: #f8fafc;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .action-btn {
+            flex: 1;
+            min-width: 120px;
+            padding: 12px 20px;
+            border-radius: 12px;
+            border: none;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .action-btn.copy {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .action-btn.copy:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(102, 126, 234, 0.4);
+        }
+
+        .action-btn.view {
+            background: #10b981;
+            color: white;
+        }
+
+        .action-btn.view:hover {
+            background: #059669;
+            transform: translateY(-2px);
+        }
+
+        .action-btn.telegram {
+            background: #3b82f6;
+            color: white;
+        }
+
+        .action-btn.telegram:hover {
+            background: #2563eb;
+            transform: translateY(-2px);
+        }
+
+        .action-btn i {
+            font-size: 18px;
+        }
+
+        .empty-state {
+            background: white;
+            border-radius: 20px;
+            padding: 60px 30px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+        }
+
+        .empty-state i {
+            font-size: 64px;
+            color: #cbd5e1;
+            margin-bottom: 20px;
+        }
+
+        .empty-state h4 {
+            color: #64748b;
+            font-weight: 600;
+        }
+
+        .search-bar {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 24px;
+        }
+
+        .search-bar input {
+            flex: 1;
+            border: 2px solid #e2e8f0;
+            padding: 12px 18px;
+            border-radius: 12px;
+            font-size: 15px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .search-bar input:focus {
+            border-color: #667eea;
+        }
+
+        .search-bar button {
+            padding: 12px 24px;
+            border-radius: 12px;
+            border: none;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+
+        .search-bar button:hover {
+            opacity: 0.88;
+        }
+
+        .pagination-wrap {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            margin-top: 24px;
+            flex-wrap: wrap;
+        }
+
+        .pagination-wrap a,
+        .pagination-wrap span {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 14px;
+            text-decoration: none;
+            border: 2px solid #e2e8f0;
+            color: #475569;
+            transition: all 0.2s;
+        }
+
+        .pagination-wrap a:hover {
+            background: #667eea;
+            border-color: #667eea;
+            color: white;
+        }
+
+        .pagination-wrap span.current {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-color: #667eea;
+            color: white;
+        }
+
+        @media (max-width: 768px) {
+            .urls-container {
+                padding: 15px 0;
+            }
+
+            .urls-header {
+                padding: 20px;
+                margin-bottom: 20px;
+            }
+
+            .urls-header h3 {
+                font-size: 22px;
+            }
+
+            .stream-header {
+                padding: 16px;
+                flex-wrap: wrap;
+                gap: 10px;
+            }
+
+            .stream-title {
+                font-size: 16px;
+                width: 100%;
+            }
+
+            .stream-body {
+                padding: 16px;
+            }
+
+            .link-input-group {
+                flex-direction: column;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+            }
+
+            .action-btn {
+                width: 100%;
+                min-width: auto;
+            }
+
+            .search-bar {
+                flex-direction: column;
+            }
+        }
+    </style>
+    <div class="col-md-9">
+                <div class="urls-header">
+                    <h3>
+                        <i class="icofont-link"></i> Mening Havolalarim
+                    </h3>
+                </div>
+
+                <form method="get" class="search-bar">
+                    <input type="text" name="q" value="" placeholder="Oqim nomi yoki ID bo'yicha qidirish...">
+                    <button type="submit"><i class="icofont-search-1"></i> Qidirish</button>
+                </form>
+
+
+                    <div class="empty-state">
+                        <i class="icofont-link"></i>
+                        <h4>Hozircha havolalar mavjud emas</h4>
+                        <p class="text-muted">Birinchi oqimingizni yarating</p>
+                    </div>
+
+
+
+                    <div class="pagination-wrap">
+
+                        <span class="current">1</span>
+
+                    </div>
+
+            </div>
+{% endblock %}

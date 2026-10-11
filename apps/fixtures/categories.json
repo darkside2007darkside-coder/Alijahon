@@ -1,0 +1,38 @@
+[
+  {
+    "model": "apps.Category",
+    "pk": 1,
+    "fields": {
+      "title": "Toys",
+      "slug": "toys",
+      "image": "<img width=\"64\" height=\"64\" src=\"https://img.icons8.com/external-flaticons-flat-flat-icons/64/external-toys-black-friday-cyber-monday-flaticons-flat-flat-icons.png\" alt=\"external-toys-black-friday-cyber-monday-flaticons-flat-flat-icons\"/>"
+    }
+  },
+  {
+    "model": "apps.Category",
+    "pk": 2,
+    "fields": {
+      "title": "Guns",
+      "slug": "guns",
+      "image": "<img width=\"64\" height=\"64\" src=\"https://img.icons8.com/3d-fluency/94/sniper-rifle.png\" alt=\"sniper-rifle\"/>"
+    }
+  },
+  {
+    "model": "apps.Category",
+    "pk": 3,
+    "fields": {
+      "title": "Electronics",
+      "slug": "electronics",
+      "image": "<img width=\"64\" height=\"64\" src=\"https://img.icons8.com/3d-fluency/94/multiple-devices.png\" alt=\"multiple-devices\"/>"
+    }
+  },
+  {
+    "model": "apps.Category",
+    "pk": 4,
+    "fields": {
+      "title": "Clothes",
+      "slug": "clothes",
+      "image": "<img width=\"64\" height=\"64\" src=\"https://img.icons8.com/3d-fluency/94/clothes.png\" alt=\"clothes\"/>"
+    }
+  }
+]

@@ -1,0 +1,621 @@
+{% extends 'base/admin.html'%}
+{% load static %}
+
+
+{% block admin_body %}
+    <style>
+        .withdraw-container {
+            padding: 30px 0;
+        }
+
+        .balance-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 24px;
+            padding: 40px;
+            color: white;
+            box-shadow: 0 20px 40px rgba(102, 126, 234, 0.3);
+            position: relative;
+            overflow: hidden;
+            margin-bottom: 30px;
+            min-height: 200px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .balance-card::before {
+            content: '';
+            position: absolute;
+            top: -50px;
+            right: -50px;
+            width: 300px;
+            height: 300px;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 50%;
+        }
+
+        .balance-card::after {
+            content: '';
+            position: absolute;
+            bottom: -80px;
+            left: -80px;
+            width: 250px;
+            height: 250px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 50%;
+        }
+
+        .balance-icon {
+            position: absolute;
+            top: 30px;
+            right: 30px;
+            font-size: 60px;
+            opacity: 0.15;
+            z-index: 1;
+        }
+
+        .balance-card h5 {
+            font-size: 14px;
+            opacity: 0.85;
+            margin-bottom: 8px;
+            position: relative;
+            z-index: 2;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 500;
+        }
+
+        .balance-amount {
+            font-size: 42px;
+            font-weight: 700;
+            position: relative;
+            z-index: 2;
+            margin-bottom: 0;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .withdraw-form-card {
+            background: white;
+            border-radius: 24px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+            margin-bottom: 30px;
+            border: 2px solid #f1f5f9;
+        }
+
+        .withdraw-form-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 24px 30px;
+            color: white;
+            position: relative;
+        }
+
+        .withdraw-form-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 150px;
+            height: 150px;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 50%;
+            transform: translate(40%, -40%);
+        }
+
+        .withdraw-form-header h5 {
+            margin: 0;
+            font-size: 20px;
+            font-weight: 700;
+            position: relative;
+            z-index: 1;
+        }
+
+        .withdraw-form-header h5 i {
+            margin-right: 8px;
+            font-size: 22px;
+        }
+
+        .tab-navigation {
+            display: flex;
+            background: #f8fafc;
+            padding: 8px;
+            gap: 8px;
+        }
+
+        .tab-button {
+            flex: 1;
+            padding: 14px;
+            border: none;
+            background: transparent;
+            color: #64748b;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-radius: 12px;
+            font-size: 15px;
+        }
+
+        .tab-button i {
+            margin-right: 6px;
+        }
+
+        .tab-button.active {
+            background: white;
+            color: #667eea;
+            box-shadow: 0 2px 8px rgba(102, 126, 234, 0.15);
+        }
+
+        .tab-button:hover:not(.active) {
+            background: rgba(255, 255, 255, 0.5);
+            color: #667eea;
+        }
+
+        .tab-content-panel {
+            padding: 30px;
+        }
+
+        .form-group-modern {
+            margin-bottom: 20px;
+        }
+
+        .form-group-modern label {
+            display: block;
+            font-weight: 600;
+            color: #475569;
+            margin-bottom: 10px;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .form-group-modern input,
+        .form-group-modern select {
+            width: 100%;
+            padding: 14px 18px;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 15px;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        .form-group-modern input:focus,
+        .form-group-modern select:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+            outline: none;
+        }
+
+        .submit-button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 16px;
+            border-radius: 12px;
+            border: none;
+            font-weight: 700;
+            font-size: 16px;
+            width: 100%;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(102, 126, 234, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .submit-button::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        .submit-button:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        .submit-button:hover:not(:disabled) {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 24px rgba(102, 126, 234, 0.4);
+        }
+
+        .submit-button:active:not(:disabled) {
+            transform: translateY(-1px);
+        }
+
+        .submit-button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .submit-button i {
+            margin-right: 8px;
+            font-size: 18px;
+        }
+
+        .transactions-card {
+            background: white;
+            border-radius: 24px;
+            padding: 35px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            margin-top: 40px;
+            border: 2px solid #f1f5f9;
+        }
+
+        .transactions-header {
+            margin-bottom: 28px;
+            padding-bottom: 20px;
+            border-bottom: 3px solid #f1f5f9;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .transactions-header h5 {
+            font-size: 24px;
+            font-weight: 700;
+            color: #1e293b;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .transactions-header h5 i {
+            font-size: 26px;
+            color: #667eea;
+        }
+
+        .transactions-count {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .transactions-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+        }
+
+        .transactions-table thead {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .transactions-table thead th {
+            color: white;
+            font-weight: 600;
+            padding: 16px;
+            text-align: left;
+            font-size: 14px;
+            border: none;
+        }
+
+        .transactions-table thead th:first-child {
+            border-radius: 12px 0 0 0;
+        }
+
+        .transactions-table thead th:last-child {
+            border-radius: 0 12px 0 0;
+        }
+
+        .transactions-table tbody tr {
+            transition: all 0.3s ease;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .transactions-table tbody tr:hover {
+            background: #f8fafc;
+        }
+
+        .transactions-table tbody td {
+            padding: 16px;
+            vertical-align: middle;
+        }
+
+        .status-badge-modern {
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            display: inline-block;
+        }
+
+        .status-badge-modern.warning {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .status-badge-modern.success {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .status-badge-modern.danger {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .pagination-container {
+            margin-top: 30px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .pagination-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 10px 16px;
+            border-radius: 8px;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            min-width: 44px;
+            font-size: 14px;
+        }
+
+        .pagination-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+            color: white;
+        }
+
+        .pagination-info {
+            color: #667eea;
+            font-weight: 600;
+            padding: 10px 16px;
+            background: #f8fafc;
+            border-radius: 8px;
+            white-space: nowrap;
+            font-size: 14px;
+        }
+
+        .alert-modern {
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+            border-radius: 16px;
+            padding: 20px 24px;
+            margin-bottom: 24px;
+            box-shadow: 0 8px 16px rgba(59, 130, 246, 0.2);
+        }
+
+        .alert-content {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: white;
+            font-weight: 500;
+        }
+
+        .alert-content i {
+            font-size: 24px;
+            flex-shrink: 0;
+        }
+
+        @media (max-width: 768px) {
+            .withdraw-container {
+                padding: 15px 0;
+            }
+
+            .balance-card {
+                padding: 30px 24px;
+                margin-bottom: 20px;
+                min-height: 160px;
+            }
+
+            .balance-amount {
+                font-size: 32px;
+            }
+
+            .balance-icon {
+                font-size: 50px;
+                top: 20px;
+                right: 20px;
+            }
+
+            .withdraw-form-header {
+                padding: 20px;
+            }
+
+            .tab-content-panel {
+                padding: 20px;
+            }
+
+            .transactions-card {
+                padding: 20px;
+                overflow-x: auto;
+            }
+
+            .transactions-header {
+                gap: 8px;
+            }
+
+            .transactions-header h5 {
+                font-size: 18px;
+            }
+
+            .transactions-header h5 i {
+                font-size: 20px;
+            }
+
+            .transactions-count {
+                font-size: 12px;
+                padding: 6px 12px;
+            }
+
+            .transactions-table {
+                font-size: 12px;
+            }
+
+            .transactions-table thead th,
+            .transactions-table tbody td {
+                padding: 12px;
+                white-space: nowrap;
+            }
+
+            .pagination-container {
+                gap: 8px;
+                margin-top: 20px;
+            }
+
+            .pagination-btn {
+                padding: 8px 12px;
+                min-width: 40px;
+                font-size: 13px;
+            }
+
+            .pagination-info {
+                padding: 8px 12px;
+                font-size: 13px;
+            }
+        }
+    </style>
+    <div class="col-md-9">
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="balance-card">
+                            <i class="icofont-wallet balance-icon"></i>
+                            <h5>Mening Hisobim</h5>
+                            <div class="balance-amount">0 so'm</div>
+                        </div>
+
+
+                    </div>
+
+                    <div class="col-lg-6">
+                        <div class="withdraw-form-card">
+                            <div class="withdraw-form-header">
+                                <h5>
+                                    <i class="icofont-money"></i> Pul Yechish
+                                </h5>
+                            </div>
+
+                            <div class="tab-navigation">
+                                <button class="tab-button active" id="money-tab" onclick="switchTab('money')">
+                                    <i class="icofont-cur-dollar"></i> Pul
+                                </button>
+                                <button class="tab-button" id="coin-tab" onclick="switchTab('coin')">
+                                    <i class="icofont-coins"></i> Tanga
+                                </button>
+                            </div>
+
+                            <div class="tab-content-panel" id="money-panel">
+                                <form class="payment-form" method="post">
+                                    <input type="hidden" name="csrfmiddlewaretoken" value="4EMJf1vGusvqOE8bvCwSbPje7tkDGajFUacYUdDMq03C64g3Uq8da7Al414Mm2IW">
+
+                                        <div class="form-group-modern">
+                                            <label>Karta raqami</label>
+                                            <input type="text" name="card_number" class="form-control" placeholder="Karta raqamini kiriting" maxlength="16" minlength="15" required="" id="id_card_number">
+
+                                        </div>
+
+                                        <div class="form-group-modern">
+                                            <label>Amount</label>
+                                            <input type="number" name="amount" class="form-control" placeholder="Miqdorini kiriting" required="" id="id_amount">
+
+                                        </div>
+
+                                        <div class="form-group-modern">
+                                            <label></label>
+                                            <select name="type" class="form-control class-type" style="display: none;" id="id_type">
+  <option value="coin">Tanga</option>
+
+  <option value="money" selected="">Pul</option>
+
+</select>
+
+                                        </div>
+
+                                    <button type="submit" class="submit-button submit-btn">
+                                        <i class="icofont-check"></i> Tasdiqlash
+                                    </button>
+                                </form>
+                            </div>
+
+                            <div class="tab-content-panel" id="coin-panel" style="display: none;">
+                                <form class="payment-form" method="post">
+                                    <input type="hidden" name="csrfmiddlewaretoken" value="4EMJf1vGusvqOE8bvCwSbPje7tkDGajFUacYUdDMq03C64g3Uq8da7Al414Mm2IW">
+
+                                        <div class="form-group-modern">
+                                            <label>Karta raqami</label>
+                                            <input type="text" name="card_number" class="form-control" placeholder="Karta raqamini kiriting" maxlength="16" minlength="15" required="" id="id_card_number">
+
+                                        </div>
+
+                                        <div class="form-group-modern">
+                                            <label>Amount</label>
+                                            <input type="number" name="amount" class="form-control" placeholder="Miqdorini kiriting" required="" id="id_amount">
+
+                                        </div>
+
+                                        <div class="form-group-modern">
+                                            <label></label>
+                                            <select name="type" class="form-control class-type" style="display: none;" id="id_type">
+  <option value="coin">Tanga</option>
+
+  <option value="money" selected="">Pul</option>
+
+</select>
+
+                                        </div>
+
+                                    <button type="submit" class="submit-button submit-btn">
+                                        <i class="icofont-check"></i> Tasdiqlash
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="transactions-card">
+                    <div class="transactions-header">
+                        <h5>
+                            <i class="icofont-history"></i>
+                            <span>O'tkazmalar Tarixi</span>
+                        </h5>
+                        <span class="transactions-count">0 ta</span>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table class="transactions-table">
+                            <thead>
+                            <tr>
+                                <th>Sana</th>
+                                <th>Hisob raqam</th>
+                                <th>Summa</th>
+                                <th>Holat</th>
+                                <th>Xabar</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+
+                                <tr>
+                                    <td colspan="5" style="text-align: center; padding: 40px; color: #64748b;">
+                                        <i class="icofont-history" style="font-size: 48px; display: block; margin-bottom: 16px;"></i>
+                                        <strong>Hozircha pul yechish so'rovlari mavjud emas</strong>
+                                    </td>
+                                </tr>
+
+                            </tbody>
+                        </table>
+                    </div>
+
+
+                </div>
+            </div>
+{% endblock %}

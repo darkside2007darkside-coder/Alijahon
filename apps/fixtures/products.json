@@ -1,0 +1,156 @@
+[
+  {
+    "model": "apps.Product",
+    "pk": 1,
+    "fields": {
+      "title": "Toy-Car",
+      "price": 100000,
+      "description": "Cool toy car",
+      "quantity": 100,
+      "category": 1,
+      "created_at": "2026-08-14T04:36:57.984868Z",
+      "slug": "toy-car"
+    }
+  },
+  {
+    "model": "apps.Product",
+    "pk": 2,
+    "fields": {
+      "title": "AK-47",
+      "price": 9000000,
+      "description": "Sporting replica",
+      "quantity": 20,
+      "category": 2,
+      "created_at": "2026-08-14T04:36:57.984868Z",
+      "slug": "ak-47"
+    }
+  },
+  {
+    "model": "apps.Product",
+    "pk": 3,
+    "fields": {
+      "title": "Wireless Headphones",
+      "price": 450000,
+      "description": "Comfortable wireless headphones",
+      "quantity": 50,
+      "category": 3,
+      "created_at": "2026-08-14T04:36:57.984868Z",
+      "slug": "wireless-headphones"
+    }
+  },
+  {
+    "model": "apps.Product",
+    "pk": 4,
+    "fields": {
+      "title": "Classic T-Shirt",
+      "price": 120000,
+      "description": "Comfortable cotton T-shirt",
+      "quantity": 80,
+      "category": 4,
+      "created_at": "2026-08-14T04:36:57.984868Z",
+      "slug": "classic-t-shirt"
+    }
+  },
+  {
+    "model": "apps.Product",
+    "pk": 5,
+    "fields": {
+      "title": "Building Blocks",
+      "price": 250000,
+      "description": "Creative building blocks for children",
+      "quantity": 60,
+      "category": 1,
+      "created_at": "2026-08-14T04:36:57.984868Z",
+      "slug": "building-blocks"
+    }
+  },
+  {
+    "model": "apps.Product",
+    "pk": 6,
+    "fields": {
+      "title": "Smart Watch",
+      "price": 850000,
+      "description": "Smart watch with fitness tracking",
+      "quantity": 25,
+      "category": 3,
+      "created_at": "2026-08-14T04:36:57.984868Z",
+      "slug": "smart-watch"
+    }
+  },
+  {
+    "model": "apps.Product",
+    "pk": 7,
+    "fields": {
+      "title": "Hoodie",
+      "price": 320000,
+      "description": "Warm casual hoodie",
+      "quantity": 40,
+      "category": 4,
+      "created_at": "2026-08-14T04:36:57.984868Z",
+      "slug": "hoodie"
+    }
+  },
+  {
+    "model": "apps.ProductImage",
+    "pk": 1,
+    "fields": {
+      "image": "products/toy-car.png",
+      "product": 1,
+      "order": 1
+    }
+  },
+  {
+    "model": "apps.ProductImage",
+    "pk": 2,
+    "fields": {
+      "image": "products/ak-47.png",
+      "product": 2,
+      "order": 1
+    }
+  },
+  {
+    "model": "apps.ProductImage",
+    "pk": 3,
+    "fields": {
+      "image": "products/headphones.png",
+      "product": 3,
+      "order": 1
+    }
+  },
+  {
+    "model": "apps.ProductImage",
+    "pk": 4,
+    "fields": {
+      "image": "products/classic-t-shirt.png",
+      "product": 4,
+      "order": 1
+    }
+  },
+  {
+    "model": "apps.ProductImage",
+    "pk": 5,
+    "fields": {
+      "image": "products/building-blocks.png",
+      "product": 5,
+      "order": 1
+    }
+  },
+  {
+    "model": "apps.ProductImage",
+    "pk": 6,
+    "fields": {
+      "image": "products/smart-watch.png",
+      "product": 6,
+      "order": 1
+    }
+  },
+  {
+    "model": "apps.ProductImage",
+    "pk": 7,
+    "fields": {
+      "image": "products/hoodie.png",
+      "product": 7,
+      "order": 1
+    }
+  }
+]

@@ -1,0 +1,398 @@
+{% extends 'base/base.html' %}
+{% load static %}
+{% load humanize %}
+
+{% block body %}
+
+    <section class="categories-section py-4">
+        <div class="container">
+            <div class="row g-3">
+                {% for category in categories %}
+                    <div class="col-4 col-md-4 col-lg-3">
+                        <a href="{% url 'category-detail' category.slug %}" class="category-card">
+                            <div class="category-image-wrapper">
+                                {{ category.image|safe }}
+<!--                                    <img class="category-image" src="{{ category.image.url }}" alt="Uy ruzg'or uchun maxsulotlar">-->
+
+                            </div>
+                            <h6 class="category-title">{{ category.title }}</h6>
+                        </a>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+
+    <section class="products-section py-5 bg-light">
+        <div class="container">
+            <div class="section-header mb-4">
+                <h2 class="section-title">Eng ko'p sotiladigan</h2>
+                <a href="{% url 'product-list' %}" class="view-all-link">
+                    Barchasini ko'rish
+                    <i class="icofont-rounded-right"></i>
+                </a>
+            </div>
+
+            <div class="row g-4">
+                {% for product in products %}
+                    <div class="col-6 col-md-4 col-lg-3">
+                        <div class="product-card">
+                            <a href="{% url 'product-detail' product.slug %}" class="product-image-link">
+                                <div class="product-image-wrapper">
+                                    <img class="product-image" src="{{ product.thumbnail_image.image.url }}" alt="Straight comb dazmol" loading="lazy">
+                                </div>
+                            </a>
+                            <div class="product-info">
+                                <h6 class="product-title">
+                                    <a href="{% url 'product-detail' product.slug %}>
+                                        {{ product.title }}
+                                    </a>
+                                </h6>
+                                <p class="product-price">{{ product.price|intcomma }} so'm</p>
+                                    </h6>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+
+<!--    <section class="products-section py-5">-->
+<!--        <div class="container">-->
+<!--            <div class="section-header mb-4">-->
+<!--                <h2 class="section-title">Yangi mahsulotlar</h2>-->
+<!--                <a href="/category" class="view-all-link">-->
+<!--                    Barchasini ko'rish-->
+<!--                    <i class="icofont-rounded-right"></i>-->
+<!--                </a>-->
+<!--            </div>-->
+
+<!--            <div class="owl-carousel owl-carousel-category owl-theme" style="opacity: 1; display: block;">-->
+
+<!--                    <div class="owl-wrapper-outer"><div class="owl-wrapper" style="width: 12720px; left: 0px; display: block; transition: 800ms; transform: translate3d(-4452px, 0px, 0px);"><div class="owl-item" style="width: 318px;"><div class="item">-->
+<!--                        <div class="products-card">-->
+<!--                            <a href="/products-detail/sidr-bargi-kukuni" class="products-image-link">-->
+<!--                                <div class="products-image-wrapper">-->
+<!--                                    <img class="products-image" src="{% static 'apps/IMG_8545.jpeg' %}" alt="Sidr bargi kukuni" loading="lazy">-->
+<!--                                </div>-->
+<!--                            </a>-->
+<!--                            <div class="products-info">-->
+<!--                                <h6 class="products-title">-->
+<!--                                    <a href="/products-detail/sidr-bargi-kukuni">-->
+<!--                                        Sidr bargi kukuni-->
+<!--                                    </a>-->
+<!--                                </h6>-->
+<!--                                <p class="products-price">99&nbsp;000 so'm</p>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                    </div></div><div class="owl-item" style="width: 318px;"><div class="item">-->
+<!--                        <div class="products-card">-->
+<!--                            <a href="/products-detail/kemiruvchilar-uchun-moslama" class="products-image-link">-->
+<!--                                <div class="products-image-wrapper">-->
+<!--                                    <img class="products-image" src="{% static 'apps/IMG_8536.jpeg' %}" alt="Kemiruvchilar uchun moslama" loading="lazy">-->
+<!--                                </div>-->
+<!--                            </a>-->
+<!--                            <div class="products-info">-->
+<!--                                <h6 class="products-title">-->
+<!--                                    <a href="/products-detail/kemiruvchilar-uchun-moslama">-->
+<!--                                        Kemiruvchilar uchun moslama-->
+<!--                                    </a>-->
+<!--                                </h6>-->
+<!--                                <p class="products-price">79&nbsp;000 so'm</p>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                    </div></div><div class="owl-item" style="width: 318px;"><div class="item">-->
+<!--                        <div class="products-card">-->
+<!--                            <a href="/products-detail/tuyaqush-yogi" class="products-image-link">-->
+<!--                                <div class="products-image-wrapper">-->
+<!--                                    <img class="products-image" src="{% static 'apps/IMG_8507.jpeg' %}" alt="Tuyaqush yogi" loading="lazy">-->
+<!--                                </div>-->
+<!--                            </a>-->
+<!--                            <div class="products-info">-->
+<!--                                <h6 class="products-title">-->
+<!--                                    <a href="/products-detail/tuyaqush-yogi">-->
+<!--                                        Tuyaqush yogi-->
+<!--                                    </a>-->
+<!--                                </h6>-->
+<!--                                <p class="products-price">99&nbsp;000 so'm</p>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                    </div></div><div class="owl-item" style="width: 318px;"><div class="item">-->
+<!--                        <div class="products-card">-->
+<!--                            <a href="/products-detail/noxush-hidlarga-asvijitil" class="products-image-link">-->
+<!--                                <div class="products-image-wrapper">-->
+<!--                                    <img class="products-image" src="{% static 'apps/IMG_8376.jpeg' %}" alt="Noxush hidlarga asvijitil" loading="lazy">-->
+<!--                                </div>-->
+<!--                            </a>-->
+<!--                            <div class="products-info">-->
+<!--                                <h6 class="products-title">-->
+<!--                                    <a href="/products-detail/noxush-hidlarga-asvijitil">-->
+<!--                                        Noxush hidlarga asvijitil-->
+<!--                                    </a>-->
+<!--                                </h6>-->
+<!--                                <p class="products-price">59&nbsp;000 so'm</p>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                    </div></div><div class="owl-item" style="width: 318px;"><div class="item">-->
+<!--                        <div class="products-card">-->
+<!--                            <a href="/products-detail/toshbaqasimon-masajyor" class="products-image-link">-->
+<!--                                <div class="products-image-wrapper">-->
+<!--                                    <img class="products-image" src="{% static 'apps/IMG_8375.jpeg' %}" alt="Toshbaqasimon masajyor" loading="lazy">-->
+<!--                                </div>-->
+<!--                            </a>-->
+<!--                            <div class="products-info">-->
+<!--                                <h6 class="products-title">-->
+<!--                                    <a href="/products-detail/toshbaqasimon-masajyor">-->
+<!--                                        Toshbaqasimon masajyor-->
+<!--                                    </a>-->
+<!--                                </h6>-->
+<!--                                <p class="products-price">199&nbsp;000 so'm</p>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                    </div></div><div class="owl-item" style="width: 318px;"><div class="item">-->
+<!--                        <div class="products-card">-->
+<!--                            <a href="/products-detail/drawshe-spf-50" class="products-image-link">-->
+<!--                                <div class="products-image-wrapper">-->
+<!--                                    <img class="products-image" src="{% static 'apps/IMG_8374.jpeg' %}" alt="Drawshe SPF 50+" loading="lazy">-->
+<!--                                </div>-->
+<!--                            </a>-->
+<!--                            <div class="products-info">-->
+<!--                                <h6 class="products-title">-->
+<!--                                    <a href="/products-detail/drawshe-spf-50">-->
+<!--                                        Drawshe SPF 50+-->
+<!--                                    </a>-->
+<!--                                </h6>-->
+<!--                                <p class="products-price">89&nbsp;000 so'm</p>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                    </div></div><div class="owl-item" style="width: 318px;"><div class="item">-->
+<!--                        <div class="products-card">-->
+<!--                            <a href="/products-detail/zero-fit" class="products-image-link">-->
+<!--                                <div class="products-image-wrapper">-->
+<!--                                    <img class="products-image" src="{% static 'apps/IMG_8192.jpeg' %}" alt="Zero Fit" loading="lazy">-->
+<!--                                </div>-->
+<!--                            </a>-->
+<!--                            <div class="products-info">-->
+<!--                                <h6 class="products-title">-->
+<!--                                    <a href="/products-detail/zero-fit">-->
+<!--                                        Zero Fit-->
+<!--                                    </a>-->
+<!--                                </h6>-->
+<!--                                <p class="products-price">79&nbsp;000 so'm</p>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                    </div></div><div class="owl-item" style="width: 318px;"><div class="item">-->
+<!--                        <div class="products-card">-->
+<!--                            <a href="/products-detail/daloil-ul-xayrot" class="products-image-link">-->
+<!--                                <div class="products-image-wrapper">-->
+<!--                                    <img class="products-image" src="{% static 'apps/IMG_8114.jpeg' %}" alt="Daloil ul-xayrot" loading="lazy">-->
+<!--                                </div>-->
+<!--                            </a>-->
+<!--                            <div class="products-info">-->
+<!--                                <h6 class="products-title">-->
+<!--                                    <a href="/products-detail/daloil-ul-xayrot">-->
+<!--                                        Daloil ul-xayrot-->
+<!--                                    </a>-->
+<!--                                </h6>-->
+<!--                                <p class="products-price">99&nbsp;000 so'm</p>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                    </div></div><div class="owl-item" style="width: 318px;"><div class="item">-->
+<!--                        <div class="products-card">-->
+<!--                            <a href="/products-detail/expigment-krem" class="products-image-link">-->
+<!--                                <div class="products-image-wrapper">-->
+<!--                                    <img class="products-image" src="{% static 'apps/IMG_8050.webp' %}" alt="Expigment krem" loading="lazy">-->
+<!--                                </div>-->
+<!--                            </a>-->
+<!--                            <div class="products-info">-->
+<!--                                <h6 class="products-title">-->
+<!--                                    <a href="/products-detail/expigment-krem">-->
+<!--                                        Expigment krem-->
+<!--                                    </a>-->
+<!--                                </h6>-->
+<!--                                <p class="products-price">79&nbsp;000 so'm</p>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                    </div></div><div class="owl-item" style="width: 318px;"><div class="item">-->
+<!--                        <div class="products-card">-->
+<!--                            <a href="/products-detail/sudocrem" class="products-image-link">-->
+<!--                                <div class="products-image-wrapper">-->
+<!--                                    <img class="products-image" src="{% static 'apps/IMG_8048.jpeg' %}" alt="Sudocrem" loading="lazy">-->
+<!--                                </div>-->
+<!--                            </a>-->
+<!--                            <div class="products-info">-->
+<!--                                <h6 class="products-title">-->
+<!--                                    <a href="/products-detail/sudocrem">-->
+<!--                                        Sudocrem-->
+<!--                                    </a>-->
+<!--                                </h6>-->
+<!--                                <p class="products-price">89&nbsp;000 so'm</p>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                    </div></div><div class="owl-item" style="width: 318px;"><div class="item">-->
+<!--                        <div class="products-card">-->
+<!--                            <a href="/products-detail/gold-fly" class="products-image-link">-->
+<!--                                <div class="products-image-wrapper">-->
+<!--                                    <img class="products-image" src="{% static 'apps/IMG_8047.jpeg' %}" alt="Gold FLY" loading="lazy">-->
+<!--                                </div>-->
+<!--                            </a>-->
+<!--                            <div class="products-info">-->
+<!--                                <h6 class="products-title">-->
+<!--                                    <a href="/products-detail/gold-fly">-->
+<!--                                        Gold FLY-->
+<!--                                    </a>-->
+<!--                                </h6>-->
+<!--                                <p class="products-price">49&nbsp;000 so'm</p>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                    </div></div><div class="owl-item" style="width: 318px;"><div class="item">-->
+<!--                        <div class="products-card">-->
+<!--                            <a href="/products-detail/esila-hashash-yogi" class="products-image-link">-->
+<!--                                <div class="products-image-wrapper">-->
+<!--                                    <img class="products-image" src="{% static 'apps/IMG_8046.jpeg' %}" alt="Esila Hashash Yog’i" loading="lazy">-->
+<!--                                </div>-->
+<!--                            </a>-->
+<!--                            <div class="products-info">-->
+<!--                                <h6 class="products-title">-->
+<!--                                    <a href="/products-detail/esila-hashash-yogi">-->
+<!--                                        Esila Hashash Yog’i-->
+<!--                                    </a>-->
+<!--                                </h6>-->
+<!--                                <p class="products-price">69&nbsp;000 so'm</p>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                    </div></div><div class="owl-item" style="width: 318px;"><div class="item">-->
+<!--                        <div class="products-card">-->
+<!--                            <a href="/products-detail/tish-plomba" class="products-image-link">-->
+<!--                                <div class="products-image-wrapper">-->
+<!--                                    <img class="products-image" src="{% static 'apps/IMG_8045.webp' %}" alt="Tish plomba" loading="lazy">-->
+<!--                                </div>-->
+<!--                            </a>-->
+<!--                            <div class="products-info">-->
+<!--                                <h6 class="products-title">-->
+<!--                                    <a href="/products-detail/tish-plomba">-->
+<!--                                        Tish plomba-->
+<!--                                    </a>-->
+<!--                                </h6>-->
+<!--                                <p class="products-price">99&nbsp;000 so'm</p>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                    </div></div><div class="owl-item" style="width: 318px;"><div class="item">-->
+<!--                        <div class="products-card">-->
+<!--                            <a href="/products-detail/dayson-fen-1" class="products-image-link">-->
+<!--                                <div class="products-image-wrapper">-->
+<!--                                    <img class="products-image" src="{% static 'apps/IMG_8015.png' %}" alt="Dayson fen" loading="lazy">-->
+<!--                                </div>-->
+<!--                            </a>-->
+<!--                            <div class="products-info">-->
+<!--                                <h6 class="products-title">-->
+<!--                                    <a href="/products-detail/dayson-fen-1">-->
+<!--                                        Dayson fen-->
+<!--                                    </a>-->
+<!--                                </h6>-->
+<!--                                <p class="products-price">159&nbsp;000 so'm</p>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                    </div></div><div class="owl-item" style="width: 318px;"><div class="item">-->
+<!--                        <div class="products-card">-->
+<!--                            <a href="/products-detail/377-spf-sprey" class="products-image-link">-->
+<!--                                <div class="products-image-wrapper">-->
+<!--                                    <img class="products-image" src="{% static 'apps/IMG_7911.jpeg' %}" alt="377 spf sprey" loading="lazy">-->
+<!--                                </div>-->
+<!--                            </a>-->
+<!--                            <div class="products-info">-->
+<!--                                <h6 class="products-title">-->
+<!--                                    <a href="/products-detail/377-spf-sprey">-->
+<!--                                        377 spf sprey-->
+<!--                                    </a>-->
+<!--                                </h6>-->
+<!--                                <p class="products-price">79&nbsp;000 so'm</p>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                    </div></div><div class="owl-item" style="width: 318px;"><div class="item">-->
+<!--                        <div class="products-card">-->
+<!--                            <a href="/products-detail/mine-kondiseaner-suv-sepadigan" class="products-image-link">-->
+<!--                                <div class="products-image-wrapper">-->
+<!--                                    <img class="products-image" src="{% static 'apps/IMG_7849.jpeg' %}" alt="Mine kondiseaner suv sepadigan" loading="lazy">-->
+<!--                                </div>-->
+<!--                            </a>-->
+<!--                            <div class="products-info">-->
+<!--                                <h6 class="products-title">-->
+<!--                                    <a href="/products-detail/mine-kondiseaner-suv-sepadigan">-->
+<!--                                        Mine kondiseaner suv sepadigan-->
+<!--                                    </a>-->
+<!--                                </h6>-->
+<!--                                <p class="products-price">89&nbsp;000 so'm</p>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                    </div></div><div class="owl-item" style="width: 318px;"><div class="item">-->
+<!--                        <div class="products-card">-->
+<!--                            <a href="/products-detail/pashshaxona-160190-razmer" class="products-image-link">-->
+<!--                                <div class="products-image-wrapper">-->
+<!--                                    <img class="products-image" src="{% static 'apps/IMG_7619.jpeg' %}" alt="Pashshaxona 160/190 razmer" loading="lazy">-->
+<!--                                </div>-->
+<!--                            </a>-->
+<!--                            <div class="products-info">-->
+<!--                                <h6 class="products-title">-->
+<!--                                    <a href="/products-detail/pashshaxona-160190-razmer">-->
+<!--                                        Pashshaxona 160/190 razmer-->
+<!--                                    </a>-->
+<!--                                </h6>-->
+<!--                                <p class="products-price">147&nbsp;000 so'm</p>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                    </div></div><div class="owl-item" style="width: 318px;"><div class="item">-->
+<!--                        <div class="products-card">-->
+<!--                            <a href="/products-detail/batana-oil" class="products-image-link">-->
+<!--                                <div class="products-image-wrapper">-->
+<!--                                    <img class="products-image" src="{% static 'apps/IMG_7689.jpeg' %}" alt="Batana Oil" loading="lazy">-->
+<!--                                </div>-->
+<!--                            </a>-->
+<!--                            <div class="products-info">-->
+<!--                                <h6 class="products-title">-->
+<!--                                    <a href="/products-detail/batana-oil">-->
+<!--                                        Batana Oil-->
+<!--                                    </a>-->
+<!--                                </h6>-->
+<!--                                <p class="products-price">69&nbsp;000 so'm</p>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                    </div></div><div class="owl-item" style="width: 318px;"><div class="item">-->
+<!--                        <div class="products-card">-->
+<!--                            <a href="/products-detail/ayollar-uchun-13-xil-probnik" class="products-image-link">-->
+<!--                                <div class="products-image-wrapper">-->
+<!--                                    <img class="products-image" src="{% static 'apps/IMG_7667.jpeg' %}" alt="Ayollar uchun 13 xil probnik" loading="lazy">-->
+<!--                                </div>-->
+<!--                            </a>-->
+<!--                            <div class="products-info">-->
+<!--                                <h6 class="products-title">-->
+<!--                                    <a href="/products-detail/ayollar-uchun-13-xil-probnik">-->
+<!--                                        Ayollar uchun 13 xil probnik-->
+<!--                                    </a>-->
+<!--                                </h6>-->
+<!--                                <p class="products-price">99&nbsp;000 so'm</p>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                    </div></div><div class="owl-item" style="width: 318px;"><div class="item">-->
+<!--                        <div class="products-card">-->
+<!--                            <a href="/products-detail/varikoz-sprey" class="products-image-link">-->
+<!--                                <div class="products-image-wrapper">-->
+<!--                                    <img class="products-image" src="{% static 'apps/IMG_7685.jpeg' %}]" alt="Varikoz sprey" loading="lazy">-->
+<!--                                </div>-->
+<!--                            </a>-->
+<!--                            <div class="products-info">-->
+<!--                                <h6 class="products-title">-->
+<!--                                    <a href="/products-detail/varikoz-sprey">-->
+<!--                                        Varikoz sprey-->
+<!--                                    </a>-->
+<!--                                </h6>-->
+<!--                                <p class="products-price">79&nbsp;000 so'm</p>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                    </div></div></div></div>-->
+<!--            <div class="owl-controls clickable"><div class="owl-buttons"><div class="owl-prev"><i class="icofont icofont-thin-left"></i></div><div class="owl-next"><i class="icofont icofont-thin-right"></i></div></div></div></div>-->
+<!--        </div>-->
+<!--    </section>-->
+
+{% endblock %}

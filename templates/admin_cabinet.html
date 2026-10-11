@@ -1,0 +1,400 @@
+{% extends 'base/admin.html' %}
+{% load static %}
+{% load humanize %}
+
+{% block admin_body %}
+    <style>
+        .market-container {
+            padding: 30px 0;
+        }
+
+        .market-header {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+        }
+
+        .market-header h3 {
+            font-size: 28px;
+            font-weight: 700;
+            color: #1e293b;
+            margin-bottom: 24px;
+            text-align: center;
+        }
+
+        .category-tabs {
+            display: flex;
+            gap: 10px;
+            overflow-x: auto;
+            padding: 10px 0;
+            margin-bottom: 20px;
+            scrollbar-width: thin;
+        }
+
+        .category-tabs::-webkit-scrollbar {
+            height: 6px;
+        }
+
+        .category-tabs::-webkit-scrollbar-track {
+            background: #f1f5f9;
+            border-radius: 10px;
+        }
+
+        .category-tabs::-webkit-scrollbar-thumb {
+            background: #667eea;
+            border-radius: 10px;
+        }
+
+        .category-btn {
+            padding: 10px 24px;
+            border: 2px solid #e2e8f0;
+            background: white;
+            border-radius: 30px;
+            font-weight: 600;
+            color: #64748b;
+            white-space: nowrap;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .category-btn:hover,
+        .category-btn.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-color: transparent;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(102, 126, 234, 0.4);
+            text-decoration: none;
+        }
+
+        .search-box-modern {
+            position: relative;
+        }
+
+        .search-box-modern input {
+            width: 100%;
+            padding: 14px 50px 14px 20px;
+            border: 2px solid #e2e8f0;
+            border-radius: 30px;
+            font-size: 15px;
+            transition: all 0.3s ease;
+        }
+
+        .search-box-modern input:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+            outline: none;
+        }
+
+        .search-box-modern button {
+            position: absolute;
+            right: 5px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            color: white;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .search-box-modern button:hover {
+            transform: translateY(-50%) scale(1.1);
+        }
+
+        .product-card-modern {
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .product-card-modern:hover {
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+            transform: translateY(-8px);
+        }
+
+        .product-image {
+            position: relative;
+            overflow: hidden;
+            height: 220px;
+        }
+
+        .product-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+
+        .product-card-modern:hover .product-image img {
+            transform: scale(1.1);
+        }
+
+        .product-badge {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            color: white;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .product-body {
+            padding: 20px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .product-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 12px;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .product-title a {
+            color: #1e293b;
+            text-decoration: none;
+        }
+
+        .product-title a:hover {
+            color: #667eea;
+        }
+
+        .product-price {
+            font-size: 20px;
+            font-weight: 700;
+            color: #667eea;
+            margin-bottom: 16px;
+        }
+
+        .product-details {
+            list-style: none;
+            padding: 0;
+            margin: 0 0 16px 0;
+            flex: 1;
+        }
+
+        .product-details li {
+            padding: 8px 0;
+            border-bottom: 1px solid #f1f5f9;
+            display: flex;
+            justify-content: space-between;
+            font-size: 14px;
+        }
+
+        .product-details li:last-child {
+            border-bottom: none;
+        }
+
+        .product-details li span:first-child {
+            color: #64748b;
+        }
+
+        .product-details li strong {
+            color: #1e293b;
+        }
+
+        .product-actions {
+            display: flex;
+            gap: 8px;
+            flex-direction: column;
+        }
+
+        .product-btn {
+            padding: 12px 20px;
+            border-radius: 12px;
+            border: none;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            text-decoration: none;
+            display: block;
+        }
+
+        .product-btn.primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .product-btn.primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(102, 126, 234, 0.4);
+            color: white;
+            text-decoration: none;
+        }
+
+        .product-btn.secondary {
+            background: #f1f5f9;
+            color: #475569;
+        }
+
+        .product-btn.secondary:hover {
+            background: #e2e8f0;
+            color: #334155;
+            text-decoration: none;
+        }
+
+        @media (max-width: 768px) {
+            .market-container {
+                padding: 15px 0;
+            }
+
+            .market-header {
+                padding: 20px;
+                margin-bottom: 20px;
+            }
+
+            .market-header h3 {
+                font-size: 22px;
+            }
+
+            .category-tabs {
+                gap: 8px;
+            }
+
+            .category-btn {
+                padding: 8px 16px;
+                font-size: 13px;
+            }
+
+            .product-image {
+                height: 180px;
+            }
+
+            .product-body {
+                padding: 16px;
+            }
+        }
+    </style>
+    <div class="col-md-9">
+                <div class="stats-card">
+                    <div class="stats-header">
+                        <h3>Mening kabinetim</h3>
+                    </div>
+
+                    <div class="balance-grid">
+                        <div class="balance-item">
+                            <div class="label">Asosiy Balans</div>
+                            <div class="amount">0 so'm</div>
+                        </div>
+                        <div class="balance-item" style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);">
+                            <div class="label">Yo'ldagi Pul</div>
+                            <div class="amount">0 so'm</div>
+                        </div>
+                        <div class="balance-item" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%);">
+                            <div class="label">
+                                <a href="/admin_page/coins" style="color: white; text-decoration: none;">Tangalar</a>
+                            </div>
+                            <div class="amount">0</div>
+                        </div>
+                    </div>
+
+                    <div class="api-key-section">
+                        <div class="label">API Key</div>
+                        <div class="api-key-content">
+                            <div class="api-key-wrapper">
+                                <div class="key" id="apiKeyDisplay">{{ user.api_key }}</div>
+                                <div class="key" id="apiKeyActual" style="display: none;">{{ user.api_key }}</div>
+                                <i class="icofont-eye toggle-eye" id="toggleIcon" onclick="toggleApiKey()" title="Ko'rsatish/Yashirish"></i>
+                            </div>
+                            <button class="btn btn-primary btn-sm" onclick="copyApiKey()">
+                                <i class="icofont-copy"></i> Nusxa olish
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="menu-grid">
+                        <a href="{% url 'admin-market' %}" class="menu-item">
+                            <i><img width="30" height="30" src="https://img.icons8.com/glyph-neue/64/FFFFFF/fast-cart.png" alt="fast-cart"/></i>
+                            <div class="text">
+                                <h5>Market</h5>
+                                <p>Mahsulotlarni ko'rish</p>
+                            </div>
+                        </a>
+
+                        <a href="{% url 'admin-oqim-list' %}" class="menu-item">
+                            <i><img width="30" height="30" src="https://img.icons8.com/ios-filled/50/FFFFFF/chain.png" alt="chain"/></i>
+                            <div class="text">
+                                <h5>Havolalar</h5>
+                                <p>Oqimlarni boshqarish</p>
+                            </div>
+                        </a>
+
+                        <a href="{% url 'admin-sorovnomalar' %}" class="menu-item">
+                            <i><img width="30" height="30" src="https://img.icons8.com/glyph-neue/64/FFFFFF/survey--v1.png" alt="survey--v1"/></i>
+                            <div class="text">
+                                <h5>So'rovnomalar</h5>
+                                <p>Buyurtmalarni ko'rish</p>
+                            </div>
+                        </a>
+
+                        <a href="{% url 'admin-statistika' %}" class="menu-item">
+                            <i><img width="30" height="30" src="https://img.icons8.com/external-solid-icons-royyan-wijaya/48/FFFFFF/external-so-bar-chart-saas-and-dashboard-solid-icons-royyan-wijaya.png" alt="external-so-bar-chart-saas-and-dashboard-solid-icons-royyan-wijaya"/></i>
+                            <div class="text">
+                                <h5>Statistika</h5>
+                                <p>Hisobotlar va tahlil</p>
+                            </div>
+                        </a>
+
+                        <a href="{% url 'admin-tolov' %}" class="menu-item">
+                            <i><img width="30" height="30" src="https://img.icons8.com/fluency-systems-filled/48/FFFFFF/money-bag.png" alt="money-bag"/></i>
+                            <div class="text">
+                                <h5>To'lov</h5>
+                                <p>Pul yechish</p>
+                            </div>
+                        </a>
+
+                        <a href="{% url 'admin-konkurs' %}" class="menu-item">
+                            <i><img width="30" height="30" src="https://img.icons8.com/glyph-neue/64/FFFFFF/trophy.png" alt="trophy"/></i>
+                            <div class="text">
+                                <h5>Konkurs</h5>
+                                <p>Ishtirok etish</p>
+                            </div>
+                        </a>
+
+                        <a href="{% url 'admin-sozlamalar' %}" class="menu-item">
+                            <i><img width="30" height="30" src="https://img.icons8.com/ios-filled/50/FFFFFF/services--v1.png" alt="services--v1"/></i>
+                            <div class="text">
+                                <h5>Sozlamalar</h5>
+                                <p>Profilni tahrirlash</p>
+                            </div>
+                        </a>
+
+                        <a href="{% url 'logout' %}" class="menu-item">
+                            <form action="{% url 'logout' %}" method="post">
+                                {% csrf_token %}
+                                <button type="submit" class="dropdown-item dropdown-item-modern">
+                                    <i><img width="30" height="30" src="https://img.icons8.com/fluency-systems-filled/48/FFFFFF/exit.png" alt="exit"/></i>
+                                    <span>Chiqish</span>
+                                </button>
+                            </form>
+                        </a>
+                    </div>
+                </div>
+            </div>
+{% endblock %}

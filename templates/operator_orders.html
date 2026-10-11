@@ -1,0 +1,187 @@
+{% extends 'base/operator.html' %}
+{% load humanize %}
+{% load static %}
+{% load phone_format %}
+
+{% block operator %}
+    <div class="op-main">
+
+        <header class="op-topbar">
+            <button type="button" class="op-burger" data-op-burger aria-label="Menyu">
+                <svg><use href="#i-menu"/></svg>
+            </button>
+
+            <div class="op-page-title">
+                <h1>Buyurtmalar navbati</h1>
+                <p>Mijoz bilan bog'lanib, buyurtmani tasdiqlang</p>
+            </div>
+
+            <div class="op-topbar-right">
+                <div class="op-clock">
+                    <svg><use href="#i-clock"/></svg>
+                    <span data-op-clock>00:00:00</span>
+                </div>
+                <button type="button" class="op-switch" data-op-switch>
+                    <span class="op-switch-track"></span>
+                    <span class="op-switch-text">Ish rejimi</span>
+                </button>
+            </div>
+        </header>
+
+        <main class="op-content">
+    <!-- ---------- Buyurtmalar jadvali ---------- -->
+    <section class="op-card" data-op-table data-op-per-page="8">
+
+        <div class="op-toolbar">
+            <div class="op-search">
+                <svg><use href="#i-search"/></svg>
+                <input type="search" placeholder="Mijoz ismi, telefon yoki buyurtma raqami..."
+                       data-op-search aria-label="Qidirish">
+                <kbd>/</kbd>
+            </div>
+
+            <select class="op-select" name="region" aria-label="Viloyat" onchange="window.location.href='?region=' + this.value">
+                <option value="all">Barcha viloyatlar</option>
+
+                {% for region in regions %}
+                    <option
+                        value="{{ region.id }}"
+                        {% if request.GET.region == region.id|stringformat:"s" %}
+                            selected
+                        {% endif %}
+                    >
+                        {{ region.title }}
+                    </option>
+                {% endfor %}
+            </select>
+
+            <button type="button" class="btn btn-ghost btn-sm" onclick="location.reload()">
+                <svg><use href="#i-refresh"/></svg>
+                Yangilash
+            </button>
+        </div>
+
+        <div class="op-tabs">
+            <button type="button" class="op-tab is-active" data-op-tab="all">Hammasi <i>{{ orders_count }}</i></button>
+            {% for status in statuses %}
+                <button type="button" class="op-tab" data-op-tab="{{ status.value }}">{{ status.label }} <i>{{ status.count }}</i></button>
+            {% endfor %}
+<!--{#            <button type="button" class="op-tab" data-op-tab="packaging">Qadoqlash <i>0</i></button>#}-->
+<!--{#            <button type="button" class="op-tab" data-op-tab="shipping">Yetkazilmoqda <i>0</i></button>#}-->
+<!--{#            <button type="button" class="op-tab" data-op-tab="delivered">Yetkazildi <i>0</i></button>#}-->
+<!--{#            <button type="button" class="op-tab" data-op-tab="pickup_later">Keyin oladi <i>0</i></button>#}-->
+<!--{#            <button type="button" class="op-tab" data-op-tab="hold">Hold <i>0</i></button>#}-->
+<!--{#            <button type="button" class="op-tab" data-op-tab="returned">Qaytib keldi <i>0</i></button>#}-->
+<!--{#            <button type="button" class="op-tab" data-op-tab="cancelled">Bekor qilindi <i>0</i></button>#}-->
+<!--{#            <button type="button" class="op-tab" data-op-tab="archive">Arxiv <i>0</i></button>#}-->
+        </div>
+
+        <div class="op-table-wrap">
+            <table class="op-table">
+                <thead>
+                <tr>
+                    <th data-sort="num">ID</th>
+                    <th data-sort="date">Sana</th>
+                    <th data-sort="text">Mijoz</th>
+                    <th data-sort="text">Mahsulot</th>
+                    <th data-sort="text">Oqim</th>
+                    <th data-sort="text">Viloyat</th>
+                    <th data-sort="num">Soni</th>
+                    <th data-sort="num">Narxi</th>
+                    <th data-sort="num">Summa</th>
+                    <th data-sort="text">Holati</th>
+                    <th>Amallar</th>
+                </tr>
+                </thead>
+                <tbody>
+
+                {% for order in orders %}
+                    <tr data-status="{{ order.status }}" data-region="{{ order.region_id }}"
+                    data-href="{% url 'operator-order-update' order.pk %}"
+                        data-search="
+                        {{ order.id }}
+                        {{ order.username }}
+                        {{ order.phone_number }}
+                        {% if order.user %}
+                            {{ order.user.first_name }}
+                            {{ order.user.last_name }}
+                            {{ order.user.phone_number }}
+                        {% endif %}
+                        {{ order.product.title }}">
+                    <td class="cell-id" data-value="{{ order.id }}">#{{ order.id }}</td>
+                    <td class="cell-muted num" data-value="{{ order.created_at }}" title="{{ order.created_at }}">
+                        {{ order.created_at }}
+                    </td>
+                         <td>
+                            <span class="cell-strong">
+                                {% if order.user.first_name and order.user.last_name %}
+                                    {{ order.user.first_name }} {{ order.user.last_name }}
+                                {% else %}
+                                    {{ order.username }}
+                                {% endif %}
+                            </span>
+
+                            {% if order.user and order.user.phone_number != order.phone_number %}
+                                <span class="cell-sub num">
+                                    Аккаунт: {{ order.user.phone_number|phone_format }}
+                                </span>
+                            {% endif %}
+
+                            <span class="cell-sub num">
+                                Заказ: {{ order.phone_number|phone_format }}
+                        </span>
+                    </td>
+                    <td><span class="cell-clip" title="{{ order.product.title }}">{{ order.product.title }}</span></td>
+                    <td><span class="cell-clip" title="{% if order.oqim %}{{ order.oqim.title }}{% endif %}">{% if order.oqim %}{{ order.oqim.title }}{% endif %}</span></td>
+                   <td>{{ order.region.title|default:"" }}</td>
+                    <td class="num">{{ order.quantity }}</td>
+                    <td class="num">{{ order.unit_price|intcomma }} so'm</td>
+                    <td class="num cell-strong" data-value="{{ order.total_price }}">{{ order.total_price|intcomma }} so'm</td>
+                    <td><span class="status-badge status-{{ order.status }}">{{ order.get_status_display }}</span></td>
+                    <td>
+                        <div class="cell-actions">
+                            <a class="btn btn-primary btn-sm" href="{% url 'operator-order-update' order.pk %}">
+                                <svg><use href="#i-phone"/></svg>
+                                Qo'ng'iroq
+                            </a>
+                            <button
+                                type="button"
+                                class="btn btn-ghost btn-sm btn-icon"
+                                data-op-modal-open="#statusModal"
+                                data-fill-id="{{ order.pk }}"
+                                data-fill-customer="{% if order.user %}{{ order.user.first_name }} {{ order.user.last_name }}{% else %}{{ order.username }}{% endif %}"
+                                data-fill-status="{{ order.status }}"
+                                data-action="{% url 'operator-list-mini-update' order.pk %}"
+                                aria-label="Holatni o'zgartirish">
+                                <svg><use href="#i-edit"></use></svg>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+
+                <!-- Filtrga hech narsa mos kelmaganda ko'rinadi -->
+                <tr class="op-no-result">
+                    <td colspan="11" class="op-empty">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"
+                             stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="11" cy="11" r="8"/>
+                            <line x1="21" y1="21" x2="16.7" y2="16.7"/>
+                        </svg>
+                        <strong>Hech narsa topilmadi</strong>
+                        Qidiruv so'zini yoki filtrlarni o'zgartirib ko'ring
+                    </td>
+                </tr>
+
+                </tbody>
+            </table>
+        </div>
+
+        <div class="op-pagination">
+            <span class="op-pagination-info" data-op-page-info></span>
+            <div class="op-pages" data-op-pages></div>
+        </div>
+    </section>
+        </main>
+    </div>
+{% endblock %}

@@ -1,0 +1,70 @@
+
+{% extends 'base/base.html' %}
+{% load static %}
+{% load humanize %}
+
+{% block body %}
+    <style>
+        .order-table {
+            font-size: 18px !important;
+        }
+
+        .order-table th,
+        .order-table td {
+            font-size: 18px !important;
+            padding: 14px;
+        }
+    </style>
+    <div class="container text-center pb-5 card" style="margin-top: 80px;">
+        <div class="card-body" style="margin-top: 30px">
+
+        </div>
+
+        <img style="height: 100px; width:100px; margin-left:45%; margin-top: 30px" src="https://img.icons8.com/3d-fluency/94/ok.png" alt="Green Success Image">
+        <h3 class="mt-4">Arizangiz qabul qilindi!</h3>
+        <p style="font-size: 18px;">Batafsil ma'lumot uchun operator yaqin vaqt ichida siz bilan aloqaga chiqadi.</p>
+        <p style="font-size: 18px;">Iltimos, telefoningiz yoqilgan holda bo'lsin!</p>
+        <table class="table text-center order-table" style="width: 100%; table-layout: fixed;">
+            <colgroup>
+                <col style="width: 14%;">
+                <col style="width: 14%;">
+                <col style="width: 14%;">
+                <col style="width: 14%;">
+                <col style="width: 14%;">
+                <col style="width: 14%;">
+                <col style="width: 14%;">
+            </colgroup>
+            <thead>
+                <tr>
+                    <th scope="col">Mahsulot</th>
+                    <th scope="col">|</th>
+                    <th scope="col">Narxi</th>
+                    <th scope="col">|</th>
+                    <th scope="col">Soni</th>
+                    <th scope="col">|</th>
+                    <th scope="col">Summa</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>{{ order.product.title }}</td>
+                    <td>|</td>
+                    <td>{{ order.unit_price|intcomma }} so'm</td>
+                    <td>|</td>
+                    <td>{{ order.quantity }}</td>
+                    <td>|</td>
+                    <td>{{ total_price|intcomma }} so'm</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <b>Yetkazib berish narxi adresga qarab o'zgaradi</b>
+
+
+        <div class="text-center mt-4">
+            <a href="{% url 'product-list' %}" class="btn btn-primary" style="width: 320px;">
+                Boshqa mahsulotlar
+            </a>
+        </div>
+    </div>
+{% endblock %}

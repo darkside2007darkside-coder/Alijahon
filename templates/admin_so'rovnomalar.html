@@ -1,0 +1,254 @@
+{% extends 'base/admin.html' %}
+{% load static %}
+
+{% block admin_body %}
+    <style>
+        .requests-container {
+            padding: 30px 0;
+        }
+
+        .requests-card {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+        }
+
+        .requests-header {
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #f1f5f9;
+        }
+
+        .requests-header h3 {
+            font-size: 28px;
+            font-weight: 700;
+            color: #1e293b;
+            margin: 0;
+        }
+
+        .table-modern {
+            border-collapse: separate;
+            border-spacing: 0;
+            width: 100%;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .table-modern thead {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .table-modern thead th {
+            color: white;
+            font-weight: 600;
+            padding: 16px;
+            font-size: 14px;
+            text-align: left;
+            border: none;
+        }
+
+        .table-modern tbody tr {
+            transition: all 0.3s ease;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .table-modern tbody tr:hover {
+            background: #f8fafc;
+            transform: scale(1.01);
+        }
+
+        .table-modern tbody td {
+            padding: 16px;
+            vertical-align: middle;
+            border: none;
+        }
+
+        .status-badge {
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            display: inline-block;
+        }
+
+        .status-badge.success {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .status-badge.danger {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .status-badge.warning {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .status-badge.info {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+
+        .status-badge.primary {
+            background: #e0e7ff;
+            color: #3730a3;
+        }
+
+        .status-badge.secondary {
+            background: #f1f5f9;
+            color: #475569;
+        }
+
+        .status-badge.orange {
+            background: #ffedd5;
+            color: #9a3412;
+        }
+
+        .status-badge.purple {
+            background: #f3e8ff;
+            color: #6b21a8;
+        }
+
+        .status-badge.teal {
+            background: #ccfbf1;
+            color: #115e59;
+        }
+
+        .status-badge.pink {
+            background: #fce7f3;
+            color: #9f1239;
+        }
+
+        .status-badge.indigo {
+            background: #e0e7ff;
+            color: #3730a3;
+        }
+
+        .action-button {
+            padding: 6px 14px;
+            border-radius: 8px;
+            border: none;
+            font-weight: 600;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 2px;
+        }
+
+        .action-button.renew {
+            background: #10b981;
+            color: white;
+        }
+
+        .action-button.renew:hover {
+            background: #059669;
+            transform: translateY(-2px);
+        }
+
+        .action-button.recall {
+            background: #ef4444;
+            color: white;
+        }
+
+        .action-button.recall:hover {
+            background: #dc2626;
+            transform: translateY(-2px);
+        }
+
+        .counter-cell {
+            font-size: 9px;
+            line-height: 1.4;
+            white-space: normal;
+            width: 100px !important;
+        }
+
+        .counter-cell span {
+            display: block;
+            margin: 1px 0;
+        }
+
+        @media (max-width: 768px) {
+            .requests-container {
+                padding: 15px 0;
+            }
+
+            .requests-card {
+                padding: 20px;
+                overflow-x: auto;
+            }
+
+            .requests-header h3 {
+                font-size: 22px;
+            }
+
+            .table-modern {
+                font-size: 12px;
+            }
+
+            .table-modern thead th,
+            .table-modern tbody td {
+                padding: 10px;
+                white-space: nowrap;
+            }
+
+            .counter-cell {
+                min-width: 90px;
+            }
+
+            .status-badge {
+                font-size: 10px;
+                padding: 4px 10px;
+            }
+
+            .action-button {
+                font-size: 10px;
+                padding: 4px 10px;
+            }
+        }
+    </style>
+    <div class="col-md-9">
+                <div class="requests-card">
+                    <div class="requests-header" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;">
+                        <h3>
+                            <i><img width="35" height="35" src="https://img.icons8.com/glyph-neue/64/1A1A1A/survey--v1.png" alt="survey--v1"/></i> So'rovnomalar
+                        </h3>
+
+                    </div>
+
+                    <div class="table-responsive">
+                        <div class="dataTables_wrapper dt-bootstrap4 no-footer">
+
+                            <table class="table-modern">
+                                <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Operator</th>
+                                    <th>Sana</th>
+                                    <th>Oqim</th>
+                                    <th>Haridor</th>
+                                    <th>Viloyat</th>
+                                    <th>Telefon</th>
+                                    <th>Holati</th>
+                                    <th>Izoh</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+
+                                    <tr>
+                                        <td colspan="8" style="text-align: center; padding: 40px; color: #64748b;">
+                                            <i style="font-size: 48px; display: block; margin-bottom: 16px;"><i><img width="55" height="55" src="https://img.icons8.com/glyph-neue/64/737373/survey--v1.png" alt="survey--v1"/></i></i>
+                                            <strong>Hozircha so'rovnomalar mavjud emas</strong>
+                                        </td>
+                                    </tr>
+
+                                </tbody>
+                            </table>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+{% endblock %}

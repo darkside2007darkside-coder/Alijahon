@@ -1,0 +1,3124 @@
+<!DOCTYPE html>
+    <html lang="uz">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Buyurtmalar - Nova</title>
+
+        <!-- ======================================================================
+             Buyurtmalar
+             Statik sahifa: HTML + CSS + JS bitta faylda, Django'ga bog'liq emas.
+             Faylni to'g'ridan-to'g'ri brauzerda ochish kifoya.
+             ====================================================================== -->
+
+        <style>
+    /* ==========================================================================
+       Operator paneli - umumiy uslublar
+       Barcha operator sahifalari shu bitta fayldan foydalanadi.
+       Bootstrap'ga bog'liq emas - panel mustaqil ishlaydi.
+       ========================================================================== */
+
+    /* ---------- 1. Ranglar va o'lchovlar ---------- */
+    :root {
+        --brand: #667eea;
+        --brand-2: #764ba2;
+        --brand-soft: rgba(102, 126, 234, 0.12);
+
+        --bg: #f1f5f9;
+        --surface: #ffffff;
+
+        --ink: #0f172a;
+        --ink-2: #475569;
+        --muted: #94a3b8;
+
+        --line: #e2e8f0;
+        --line-soft: #eef2f7;
+
+        --ok: #10b981;
+        --warn: #f59e0b;
+        --danger: #ef4444;
+        --info: #0ea5e9;
+
+        --radius: 18px;
+        --radius-sm: 12px;
+        --shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+        --shadow-sm: 0 4px 14px rgba(15, 23, 42, 0.06);
+
+        --sidebar-w: 264px;
+        --topbar-h: 68px;
+    }
+
+    /* ---------- 2. Asosiy qayta o'rnatish ---------- */
+    * {
+        box-sizing: border-box;
+    }
+
+    html,
+    body {
+        margin: 0;
+        padding: 0;
+    }
+
+    body.op-body {
+        background: var(--bg);
+        color: var(--ink);
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+        font-size: 14px;
+        line-height: 1.55;
+        -webkit-font-smoothing: antialiased;
+    }
+
+    a {
+        color: inherit;
+        text-decoration: none;
+    }
+
+    button {
+        font: inherit;
+        cursor: pointer;
+    }
+
+    h1, h2, h3, h4, h5 {
+        margin: 0;
+        color: var(--ink);
+        font-weight: 700;
+    }
+
+    table {
+        border-collapse: collapse;
+    }
+
+    /* Raqamlar ustunlarda tekis turishi uchun */
+    .num {
+        font-variant-numeric: tabular-nums;
+    }
+
+    /* ---------- 3. Sahifa karkasi ---------- */
+    .op-shell {
+        display: flex;
+        min-height: 100vh;
+    }
+
+    /* ---------- 4. Yon menyu ---------- */
+    .op-sidebar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        z-index: 60;
+        display: flex;
+        flex-direction: column;
+        width: var(--sidebar-w);
+        height: 100vh;
+        background: linear-gradient(180deg, #1e1b4b 0%, #2a2064 100%);
+        color: #c7d2fe;
+    }
+
+    .op-brand {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        height: var(--topbar-h);
+        padding: 0 22px;
+        flex: none;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .op-brand-mark {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        flex: none;
+        width: 36px;
+        height: 36px;
+        border-radius: 10px;
+        background: linear-gradient(135deg, var(--brand) 0%, var(--brand-2) 100%);
+        color: #fff;
+    }
+
+    .op-brand-mark svg {
+        width: 20px;
+        height: 20px;
+    }
+
+    .op-brand-text b {
+        display: block;
+        color: #fff;
+        font-size: 15px;
+        line-height: 1.2;
+    }
+
+    .op-brand-text span {
+        font-size: 11px;
+        letter-spacing: 0.4px;
+        text-transform: uppercase;
+        opacity: 0.6;
+    }
+
+    /* Operator kartasi - navbatdagi ish hajmi shu yerda ko'rinadi */
+    .op-me {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin: 18px 16px;
+        padding: 14px;
+        border-radius: 14px;
+        background: rgba(255, 255, 255, 0.06);
+    }
+
+    .op-me-avatar {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex: none;
+        width: 42px;
+        height: 42px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, var(--brand) 0%, var(--brand-2) 100%);
+        color: #fff;
+        font-weight: 700;
+    }
+
+    .op-me-info {
+        min-width: 0;
+    }
+
+    .op-me-info b {
+        display: block;
+        overflow: hidden;
+        color: #fff;
+        font-size: 13px;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .op-me-info span {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 11px;
+        opacity: 0.7;
+    }
+
+    .op-dot {
+        display: inline-block;
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        background: var(--ok);
+        box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.25);
+    }
+
+    .op-dot.is-off {
+        background: var(--muted);
+        box-shadow: 0 0 0 3px rgba(148, 163, 184, 0.2);
+    }
+
+    .op-nav {
+        flex: 1;
+        overflow-y: auto;
+        padding: 6px 12px 20px;
+    }
+
+    .op-nav-title {
+        padding: 14px 12px 6px;
+        font-size: 10px;
+        font-weight: 700;
+        letter-spacing: 0.8px;
+        text-transform: uppercase;
+        opacity: 0.45;
+    }
+
+    .op-nav a {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 2px;
+        padding: 11px 12px;
+        border-radius: 10px;
+        color: #c7d2fe;
+        font-weight: 500;
+        transition: background 0.18s ease, color 0.18s ease;
+    }
+
+    .op-nav a svg {
+        flex: none;
+        width: 18px;
+        height: 18px;
+        opacity: 0.8;
+    }
+
+    .op-nav a:hover {
+        background: rgba(255, 255, 255, 0.07);
+        color: #fff;
+    }
+
+    .op-nav a.is-active {
+        background: linear-gradient(135deg, var(--brand) 0%, var(--brand-2) 100%);
+        color: #fff;
+        box-shadow: 0 6px 18px rgba(102, 126, 234, 0.35);
+    }
+
+    .op-nav a.is-active svg {
+        opacity: 1;
+    }
+
+    /* Menyudagi hisoblagich - yangi buyurtmalar soni */
+    .op-nav-count {
+        margin-left: auto;
+        padding: 2px 8px;
+        border-radius: 20px;
+        background: rgba(255, 255, 255, 0.14);
+        font-size: 11px;
+        font-weight: 700;
+    }
+
+    .op-nav a.is-active .op-nav-count {
+        background: rgba(255, 255, 255, 0.25);
+    }
+
+    .op-nav-count.is-hot {
+        background: var(--danger);
+        color: #fff;
+    }
+
+    .op-sidebar-foot {
+        flex: none;
+        padding: 14px 16px 18px;
+        border-top: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .op-logout {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        width: 100%;
+        padding: 10px;
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        border-radius: 10px;
+        background: transparent;
+        color: #c7d2fe;
+        font-size: 13px;
+        font-weight: 600;
+        transition: background 0.18s ease, color 0.18s ease;
+    }
+
+    .op-logout:hover {
+        background: rgba(239, 68, 68, 0.18);
+        border-color: rgba(239, 68, 68, 0.4);
+        color: #fecaca;
+    }
+
+    .op-logout svg {
+        width: 16px;
+        height: 16px;
+    }
+
+    /* ---------- 5. Ish maydoni va yuqori panel ---------- */
+    .op-main {
+        flex: 1;
+        min-width: 0;
+        margin-left: var(--sidebar-w);
+    }
+
+    .op-topbar {
+        position: sticky;
+        top: 0;
+        z-index: 40;
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        height: var(--topbar-h);
+        padding: 0 26px;
+        background: rgba(255, 255, 255, 0.92);
+        border-bottom: 1px solid var(--line);
+        backdrop-filter: blur(8px);
+    }
+
+    .op-burger {
+        display: none;
+        padding: 8px;
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        background: #fff;
+        color: var(--ink-2);
+        line-height: 0;
+    }
+
+    .op-burger svg {
+        width: 20px;
+        height: 20px;
+    }
+
+    .op-page-title h1 {
+        font-size: 18px;
+    }
+
+    .op-page-title p {
+        margin: 1px 0 0;
+        color: var(--muted);
+        font-size: 12px;
+    }
+
+    .op-topbar-right {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-left: auto;
+    }
+
+    .op-clock {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 14px;
+        border-radius: 10px;
+        background: #f8fafc;
+        color: var(--ink-2);
+        font-size: 13px;
+        font-weight: 600;
+    }
+
+    .op-clock svg {
+        width: 16px;
+        height: 16px;
+        color: var(--muted);
+    }
+
+    /* Ish holati kaliti - operator qo'ng'iroq qabul qilyaptimi yoki tanaffusda */
+    .op-switch {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        padding: 7px 14px 7px 10px;
+        border: 1px solid var(--line);
+        border-radius: 30px;
+        background: #fff;
+        color: var(--ink-2);
+        font-size: 13px;
+        font-weight: 600;
+    }
+
+    .op-switch-track {
+        position: relative;
+        width: 38px;
+        height: 22px;
+        border-radius: 20px;
+        background: var(--ok);
+        transition: background 0.2s ease;
+    }
+
+    .op-switch-track::after {
+        content: '';
+        position: absolute;
+        top: 3px;
+        left: 19px;
+        width: 16px;
+        height: 16px;
+        border-radius: 50%;
+        background: #fff;
+        transition: left 0.2s ease;
+    }
+
+    .op-switch.is-off .op-switch-track {
+        background: var(--muted);
+    }
+
+    .op-switch.is-off .op-switch-track::after {
+        left: 3px;
+    }
+
+    .op-content {
+        padding: 26px;
+    }
+
+    /* ---------- 6. Kartalar ---------- */
+    .op-card {
+        background: var(--surface);
+        border-radius: var(--radius);
+        box-shadow: var(--shadow);
+    }
+
+    .op-card-head {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 20px 22px;
+        border-bottom: 1px solid var(--line-soft);
+    }
+
+    .op-card-head h3 {
+        font-size: 16px;
+    }
+
+    .op-card-head .op-card-sub {
+        margin: 2px 0 0;
+        color: var(--muted);
+        font-size: 12px;
+    }
+
+    .op-card-head-actions {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-left: auto;
+    }
+
+    .op-card-icon {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        flex: none;
+        width: 40px;
+        height: 40px;
+        border-radius: var(--radius-sm);
+        background: linear-gradient(135deg, var(--brand) 0%, var(--brand-2) 100%);
+        color: #fff;
+    }
+
+    .op-card-icon svg {
+        width: 20px;
+        height: 20px;
+    }
+
+    .op-card-body {
+        padding: 22px;
+    }
+
+    /* ---------- 7. Tugmalar ---------- */
+    .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 7px;
+        padding: 10px 16px;
+        border: 1px solid transparent;
+        border-radius: 10px;
+        background: #f1f5f9;
+        color: var(--ink-2);
+        font-size: 13px;
+        font-weight: 600;
+        white-space: nowrap;
+        transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease, color 0.15s ease;
+    }
+
+    .btn svg {
+        width: 16px;
+        height: 16px;
+    }
+
+    .btn:hover {
+        background: #e2e8f0;
+    }
+
+    .btn:active {
+        transform: translateY(1px);
+    }
+
+    .btn-primary {
+        background: linear-gradient(135deg, var(--brand) 0%, var(--brand-2) 100%);
+        color: #fff;
+    }
+
+    .btn-primary:hover {
+        background: linear-gradient(135deg, #5a6fd8 0%, #6a4292 100%);
+        box-shadow: 0 8px 20px rgba(102, 126, 234, 0.32);
+    }
+
+    .btn-ghost {
+        border-color: var(--line);
+        background: #fff;
+    }
+
+    .btn-ghost:hover {
+        border-color: var(--brand);
+        background: #fff;
+        color: var(--brand);
+    }
+
+    .btn-sm {
+        padding: 7px 12px;
+        font-size: 12px;
+    }
+
+    .btn-icon {
+        padding: 8px;
+    }
+
+    .btn-icon svg {
+        width: 17px;
+        height: 17px;
+    }
+
+    .btn-block {
+        width: 100%;
+    }
+
+    .btn[disabled] {
+        opacity: 0.55;
+        cursor: not-allowed;
+    }
+
+    /* ---------- 8. Holat belgilari ---------- */
+    /* Klass nomlari Order.Status qiymatlariga mos: status-{{ order.status }} */
+    .status-badge {
+        display: inline-block;
+        padding: 5px 12px;
+        border-radius: 20px;
+        background: #f1f5f9;
+        color: var(--ink-2);
+        font-size: 12px;
+        font-weight: 600;
+        white-space: nowrap;
+    }
+
+    .status-badge.status-new {
+        background: rgba(102, 126, 234, 0.12);
+        color: #4f46e5;
+    }
+
+    .status-badge.status-packaging {
+        background: rgba(139, 92, 246, 0.12);
+        color: #7c3aed;
+    }
+
+    .status-badge.status-shipping {
+        background: rgba(14, 165, 233, 0.12);
+        color: #0284c7;
+    }
+
+    .status-badge.status-delivered {
+        background: rgba(16, 185, 129, 0.12);
+        color: #059669;
+    }
+
+    .status-badge.status-pickup_later,
+    .status-badge.status-hold {
+        background: rgba(245, 158, 11, 0.12);
+        color: #b45309;
+    }
+
+    .status-badge.status-returned {
+        background: rgba(249, 115, 22, 0.12);
+        color: #c2410c;
+    }
+
+    .status-badge.status-cancelled {
+        background: rgba(239, 68, 68, 0.12);
+        color: #b91c1c;
+    }
+
+    .status-badge.status-archive {
+        background: #f1f5f9;
+        color: #64748b;
+    }
+
+    /* ---------- 9. Filtrlar paneli ---------- */
+    .op-toolbar {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        flex-wrap: wrap;
+        padding: 16px 22px;
+        border-bottom: 1px solid var(--line-soft);
+    }
+
+    .op-search {
+        position: relative;
+        flex: 1;
+        min-width: 220px;
+    }
+
+    .op-search svg {
+        position: absolute;
+        top: 50%;
+        left: 13px;
+        width: 17px;
+        height: 17px;
+        color: var(--muted);
+        transform: translateY(-50%);
+        pointer-events: none;
+    }
+
+    .op-search input {
+        width: 100%;
+        padding: 10px 14px 10px 40px;
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        background: #f8fafc;
+        color: var(--ink);
+        font-size: 13px;
+        outline: none;
+        transition: border-color 0.18s ease, background 0.18s ease;
+    }
+
+    .op-search input:focus {
+        border-color: var(--brand);
+        background: #fff;
+        box-shadow: 0 0 0 3px var(--brand-soft);
+    }
+
+    .op-search kbd {
+        position: absolute;
+        top: 50%;
+        right: 10px;
+        padding: 2px 7px;
+        border: 1px solid var(--line);
+        border-radius: 6px;
+        background: #fff;
+        color: var(--muted);
+        font-family: inherit;
+        font-size: 11px;
+        transform: translateY(-50%);
+    }
+
+    .op-select {
+        padding: 10px 34px 10px 13px;
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        background: #f8fafc url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E") no-repeat right 11px center/15px;
+        color: var(--ink-2);
+        font-size: 13px;
+        font-weight: 500;
+        outline: none;
+        appearance: none;
+        -webkit-appearance: none;
+    }
+
+    .op-select:focus {
+        border-color: var(--brand);
+        box-shadow: 0 0 0 3px var(--brand-soft);
+    }
+
+    /* ---------- 10. Holat bo'yicha ichki menyu ---------- */
+    .op-tabs {
+        display: flex;
+        gap: 6px;
+        overflow-x: auto;
+        padding: 14px 22px;
+        border-bottom: 1px solid var(--line-soft);
+        scrollbar-width: none;
+    }
+
+    .op-tabs::-webkit-scrollbar {
+        display: none;
+    }
+
+    .op-tab {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        padding: 8px 14px;
+        border: 1px solid transparent;
+        border-radius: 30px;
+        background: transparent;
+        color: var(--ink-2);
+        font-size: 13px;
+        font-weight: 600;
+        white-space: nowrap;
+        transition: background 0.16s ease, color 0.16s ease;
+    }
+
+    .op-tab:hover {
+        background: #f1f5f9;
+    }
+
+    .op-tab.is-active {
+        background: linear-gradient(135deg, var(--brand) 0%, var(--brand-2) 100%);
+        color: #fff;
+        box-shadow: 0 6px 16px rgba(102, 126, 234, 0.28);
+    }
+
+    .op-tab i {
+        padding: 1px 8px;
+        border-radius: 20px;
+        background: #e2e8f0;
+        color: var(--ink-2);
+        font-size: 11px;
+        font-style: normal;
+        font-weight: 700;
+    }
+
+    .op-tab.is-active i {
+        background: rgba(255, 255, 255, 0.28);
+        color: #fff;
+    }
+
+    /* ---------- 11. Jadval ---------- */
+    .op-table-wrap {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .op-table {
+        width: 100%;
+        font-size: 13.5px;
+    }
+
+    .op-table th,
+    .op-table td {
+        padding: 14px 12px;
+        border-bottom: 1px solid var(--line-soft);
+        text-align: left;
+        white-space: nowrap;
+        vertical-align: middle;
+    }
+
+    .op-table th:first-child,
+    .op-table td:first-child {
+        padding-left: 22px;
+    }
+
+    .op-table th:last-child,
+    .op-table td:last-child {
+        padding-right: 22px;
+    }
+
+    /* Sarlavha yopishqoq emas: .op-table-wrap'da overflow-x bor, shuning uchun
+       position:sticky oyna emas, o'sha blokka nisbatan hisoblanadi va sarlavha
+       birinchi qatorning ustiga tushib qoladi. */
+    .op-table thead th {
+        background: #f8fafc;
+        color: var(--ink-2);
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 0.3px;
+        text-transform: uppercase;
+    }
+
+    .op-table thead th[data-sort] {
+        cursor: pointer;
+        user-select: none;
+    }
+
+    .op-table thead th[data-sort]:hover {
+        color: var(--brand);
+    }
+
+    .op-table thead th[data-sort]::after {
+        content: '↕';
+        margin-left: 5px;
+        opacity: 0.35;
+        font-size: 10px;
+    }
+
+    .op-table thead th.sort-asc::after {
+        content: '↑';
+        opacity: 1;
+    }
+
+    .op-table thead th.sort-desc::after {
+        content: '↓';
+        opacity: 1;
+    }
+
+    .op-table tbody tr {
+        transition: background 0.14s ease;
+    }
+
+    .op-table tbody tr:hover {
+        background: #f8fafc;
+    }
+
+    .op-table tbody tr:last-child td {
+        border-bottom: none;
+    }
+
+    /* Yangi buyurtma - chapdagi rangli chiziq bilan ajratiladi */
+    .cell-id {
+        color: var(--muted);
+        font-weight: 700;
+    }
+
+    .cell-strong {
+        color: var(--ink);
+        font-weight: 600;
+    }
+
+    .cell-muted {
+        color: var(--muted);
+    }
+
+    .cell-sub {
+        display: block;
+        margin-top: 2px;
+        color: var(--muted);
+        font-size: 12px;
+        font-weight: 400;
+    }
+
+    /* Uzun matnlar - kesib, to'liq holini title'da qoldiramiz */
+    .cell-clip {
+        display: inline-block;
+        max-width: 170px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        vertical-align: bottom;
+        white-space: nowrap;
+    }
+
+    .cell-actions {
+        display: flex;
+        gap: 6px;
+    }
+
+    /* ---------- 12. Bo'sh holat ---------- */
+    .op-empty {
+        padding: 56px 20px;
+        color: var(--muted);
+        text-align: center;
+        white-space: normal;
+    }
+
+    .op-empty svg {
+        display: block;
+        width: 46px;
+        height: 46px;
+        margin: 0 auto 14px;
+        color: #cbd5e1;
+    }
+
+    .op-empty strong {
+        display: block;
+        margin-bottom: 4px;
+        color: var(--ink-2);
+        font-size: 15px;
+    }
+
+    /* Filtrga hech narsa mos kelmaganda JS shu qatorni ko'rsatadi */
+    tr.op-no-result {
+        display: none;
+    }
+
+    tr.op-no-result.is-shown {
+        display: table-row;
+    }
+
+    tr.op-no-result:hover {
+        background: transparent;
+    }
+
+    /* ---------- 13. Sahifalash ---------- */
+    .op-pagination {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        flex-wrap: wrap;
+        padding: 16px 22px;
+        border-top: 1px solid var(--line-soft);
+    }
+
+    .op-pagination-info {
+        color: var(--muted);
+        font-size: 12.5px;
+    }
+
+    .op-pages {
+        display: flex;
+        gap: 5px;
+        margin-left: auto;
+    }
+
+    /* Forma xatolari ro'yxati */
+    .op-errors {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 18px;
+        padding: 14px 16px;
+        border: 1px solid rgba(239, 68, 68, 0.35);
+        border-radius: var(--radius-sm);
+        background: rgba(239, 68, 68, 0.08);
+        color: #b91c1c;
+        font-size: 13px;
+    }
+
+    .op-errors svg {
+        flex: none;
+        width: 18px;
+        height: 18px;
+        margin-top: 1px;
+    }
+
+    .op-errors ul {
+        margin: 6px 0 0;
+        padding-left: 18px;
+    }
+
+    /* <button> (JS sahifalash) va <a>/<span> (server sahifalash) bir xil ko'rinadi */
+    .op-page {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 34px;
+        height: 34px;
+        padding: 0 9px;
+        border: 1px solid var(--line);
+        border-radius: 9px;
+        background: #fff;
+        color: var(--ink-2);
+        font-size: 13px;
+        font-weight: 600;
+        text-decoration: none;
+    }
+
+    .op-page:hover:not([disabled]) {
+        border-color: var(--brand);
+        color: var(--brand);
+    }
+
+    .op-page.is-active {
+        border-color: transparent;
+        background: linear-gradient(135deg, var(--brand) 0%, var(--brand-2) 100%);
+        color: #fff;
+    }
+
+    .op-page[disabled] {
+        opacity: 0.45;
+        cursor: not-allowed;
+    }
+
+    /* ---------- 14. Formalar ---------- */
+    .op-field {
+        margin-bottom: 18px;
+    }
+
+    .op-field > label {
+        display: block;
+        margin-bottom: 7px;
+        color: var(--ink-2);
+        font-size: 12.5px;
+        font-weight: 600;
+    }
+
+    .op-field .op-hint {
+        margin: 6px 0 0;
+        color: var(--muted);
+        font-size: 12px;
+    }
+
+    .op-input,
+    .op-textarea {
+        width: 100%;
+        padding: 11px 14px;
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        background: #f8fafc;
+        color: var(--ink);
+        font-family: inherit;
+        font-size: 13.5px;
+        outline: none;
+        transition: border-color 0.18s ease, background 0.18s ease, box-shadow 0.18s ease;
+    }
+
+    .op-input:focus,
+    .op-textarea:focus {
+        border-color: var(--brand);
+        background: #fff;
+        box-shadow: 0 0 0 3px var(--brand-soft);
+    }
+
+    .op-input[readonly] {
+        color: var(--ink-2);
+        cursor: default;
+    }
+
+    .op-textarea {
+        min-height: 110px;
+        line-height: 1.6;
+        resize: vertical;
+    }
+
+    .op-field-select {
+        width: 100%;
+        padding: 11px 36px 11px 14px;
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        background: #f8fafc url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E") no-repeat right 12px center/16px;
+        color: var(--ink);
+        font-family: inherit;
+        font-size: 13.5px;
+        outline: none;
+        appearance: none;
+        -webkit-appearance: none;
+    }
+
+    .op-field-select:focus {
+        border-color: var(--brand);
+        background-color: #fff;
+        box-shadow: 0 0 0 3px var(--brand-soft);
+    }
+
+    .op-grid-2 {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 0 16px;
+    }
+
+    /* Belgilar hisoblagichi */
+    .op-counter {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 6px;
+        color: var(--muted);
+        font-size: 11.5px;
+    }
+
+    .op-counter.is-limit {
+        color: var(--danger);
+    }
+
+    /* Tez izohlar - operator ko'p yozmasligi uchun tayyor iboralar */
+    .op-chips {
+        display: flex;
+        gap: 7px;
+        flex-wrap: wrap;
+        margin-bottom: 10px;
+    }
+
+    .op-chip {
+        padding: 6px 12px;
+        border: 1px dashed var(--line);
+        border-radius: 20px;
+        background: #fff;
+        color: var(--ink-2);
+        font-size: 12px;
+        font-weight: 500;
+        transition: border-color 0.16s ease, background 0.16s ease, color 0.16s ease;
+    }
+
+    .op-chip:hover {
+        border-style: solid;
+        border-color: var(--brand);
+        background: var(--brand-soft);
+        color: var(--brand);
+    }
+
+    /* ---------- 15. Holat tanlash (radio) ---------- */
+    .op-status-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 9px;
+    }
+
+    .op-status-opt input {
+        position: absolute;
+        opacity: 0;
+        pointer-events: none;
+    }
+
+    .op-status-opt span {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 7px;
+        padding: 12px 8px;
+        border: 1.5px solid var(--line);
+        border-radius: var(--radius-sm);
+        background: #fff;
+        color: var(--ink-2);
+        font-size: 12.5px;
+        font-weight: 600;
+        text-align: center;
+        cursor: pointer;
+        transition: border-color 0.16s ease, background 0.16s ease, color 0.16s ease, transform 0.16s ease;
+    }
+
+    .op-status-opt span::before {
+        content: '';
+        flex: none;
+        width: 9px;
+        height: 9px;
+        border-radius: 50%;
+        background: currentColor;
+        opacity: 0.35;
+    }
+
+    .op-status-opt:hover span {
+        border-color: #cbd5e1;
+        transform: translateY(-1px);
+    }
+
+    .op-status-opt input:checked + span {
+        border-color: currentColor;
+        box-shadow: 0 6px 16px rgba(15, 23, 42, 0.08);
+    }
+
+    .op-status-opt input:checked + span::before {
+        opacity: 1;
+    }
+
+    .op-status-opt input:focus-visible + span {
+        box-shadow: 0 0 0 3px var(--brand-soft);
+    }
+
+    /* Har bir holat o'z rangida - jadvaldagi belgilar bilan bir xil */
+    .op-status-opt.s-packaging input:checked + span {
+        background: rgba(139, 92, 246, 0.08);
+        color: #7c3aed;
+    }
+
+    .op-status-opt.s-shipping input:checked + span {
+        background: rgba(14, 165, 233, 0.08);
+        color: #0284c7;
+    }
+
+    .op-status-opt.s-delivered input:checked + span {
+        background: rgba(16, 185, 129, 0.08);
+        color: #059669;
+    }
+
+    .op-status-opt.s-pickup_later input:checked + span,
+    .op-status-opt.s-hold input:checked + span {
+        background: rgba(245, 158, 11, 0.08);
+        color: #b45309;
+    }
+
+    .op-status-opt.s-returned input:checked + span {
+        background: rgba(249, 115, 22, 0.08);
+        color: #c2410c;
+    }
+
+    .op-status-opt.s-cancelled input:checked + span {
+        background: rgba(239, 68, 68, 0.08);
+        color: #b91c1c;
+    }
+
+    .op-status-opt.s-archive input:checked + span {
+        background: #f1f5f9;
+        color: #64748b;
+    }
+
+    /* ---------- 16. Buyurtma sahifasi ---------- */
+    .op-detail {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 400px;
+        gap: 20px;
+        align-items: start;
+    }
+
+    .op-detail-col {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+        min-width: 0;
+    }
+
+    /* O'ng ustun - forma ekran bilan birga suriladi */
+    .op-detail-col--side {
+        position: sticky;
+        top: calc(var(--topbar-h) + 26px);
+    }
+
+    .op-back {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        margin-bottom: 14px;
+        color: var(--ink-2);
+        font-size: 13px;
+        font-weight: 600;
+    }
+
+    .op-back:hover {
+        color: var(--brand);
+    }
+
+    .op-back svg {
+        width: 16px;
+        height: 16px;
+    }
+
+    .op-detail-head {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        flex-wrap: wrap;
+        margin-bottom: 18px;
+    }
+
+    .op-detail-head h2 {
+        font-size: 22px;
+    }
+
+    .op-detail-head .op-meta {
+        color: var(--muted);
+        font-size: 12.5px;
+    }
+
+    /* Qo'ng'iroq bloki - sahifadagi eng muhim joy */
+    .op-call {
+        position: relative;
+        overflow: hidden;
+        padding: 24px;
+        border-radius: var(--radius);
+        background: linear-gradient(135deg, var(--brand) 0%, var(--brand-2) 100%);
+        color: #fff;
+        box-shadow: 0 12px 30px rgba(102, 126, 234, 0.28);
+    }
+
+    .op-call::after {
+        content: '';
+        position: absolute;
+        top: -60px;
+        right: -40px;
+        width: 190px;
+        height: 190px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.1);
+    }
+
+    .op-call-inner {
+        position: relative;
+        z-index: 1;
+        display: flex;
+        align-items: center;
+        gap: 20px;
+        flex-wrap: wrap;
+    }
+
+    .op-call-who {
+        flex: 1;
+        min-width: 200px;
+    }
+
+    .op-call-who .op-call-label {
+        font-size: 12px;
+        opacity: 0.85;
+    }
+
+    .op-call-who h3 {
+        margin: 2px 0 6px;
+        color: #fff;
+        font-size: 20px;
+    }
+
+    .op-call-phone {
+        display: inline-flex;
+        align-items: center;
+        gap: 9px;
+        color: #fff;
+        font-size: 24px;
+        font-weight: 700;
+        letter-spacing: 0.4px;
+    }
+
+    .op-call-phone svg {
+        width: 20px;
+        height: 20px;
+        opacity: 0.85;
+    }
+
+    .btn-white {
+        background: #fff;
+        color: var(--brand-2);
+    }
+
+    .btn-white:hover {
+        background: #f8fafc;
+        color: var(--brand-2);
+    }
+
+    /* Mahsulot bloki */
+    .op-product {
+        display: flex;
+        gap: 18px;
+        align-items: flex-start;
+    }
+
+    .op-product-img {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex: none;
+        width: 108px;
+        height: 108px;
+        border: 1px solid var(--line);
+        border-radius: var(--radius-sm);
+        background: #f8fafc;
+        color: #cbd5e1;
+        overflow: hidden;
+    }
+
+    .op-product-img img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .op-product-img svg {
+        width: 34px;
+        height: 34px;
+    }
+
+    .op-product-info {
+        flex: 1;
+        min-width: 0;
+    }
+
+    .op-product-info h4 {
+        font-size: 16px;
+    }
+
+    .op-product-info .op-meta {
+        margin: 4px 0 12px;
+        color: var(--muted);
+        font-size: 12.5px;
+    }
+
+    /* Miqdor tanlagich */
+    .op-qty {
+        display: inline-flex;
+        align-items: center;
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        overflow: hidden;
+    }
+
+    .op-qty button {
+        width: 36px;
+        height: 38px;
+        border: none;
+        background: #f8fafc;
+        color: var(--ink-2);
+        font-size: 18px;
+        line-height: 1;
+    }
+
+    .op-qty button:hover {
+        background: #e2e8f0;
+        color: var(--brand);
+    }
+
+    .op-qty input {
+        width: 54px;
+        height: 38px;
+        border: none;
+        border-right: 1px solid var(--line);
+        border-left: 1px solid var(--line);
+        background: #fff;
+        color: var(--ink);
+        font-family: inherit;
+        font-size: 14px;
+        font-weight: 700;
+        text-align: center;
+        outline: none;
+        -moz-appearance: textfield;
+    }
+
+    .op-qty input::-webkit-outer-spin-button,
+    .op-qty input::-webkit-inner-spin-button {
+        margin: 0;
+        -webkit-appearance: none;
+    }
+
+    /* Narx hisobi */
+    .op-price-rows {
+        margin-top: 18px;
+        padding-top: 16px;
+        border-top: 1px dashed var(--line);
+    }
+
+    .op-price-row {
+        display: flex;
+        justify-content: space-between;
+        padding: 5px 0;
+        color: var(--ink-2);
+        font-size: 13px;
+    }
+
+    .op-price-row.is-total {
+        margin-top: 8px;
+        padding-top: 12px;
+        border-top: 1px solid var(--line);
+        color: var(--ink);
+        font-size: 17px;
+        font-weight: 700;
+    }
+
+    .op-price-row .is-minus {
+        color: var(--ok);
+    }
+
+    /* Ma'lumot juftliklari */
+    .op-facts {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 16px;
+    }
+
+    .op-fact-label {
+        color: var(--muted);
+        font-size: 11.5px;
+        font-weight: 600;
+        letter-spacing: 0.3px;
+        text-transform: uppercase;
+    }
+
+    .op-fact-value {
+        margin-top: 3px;
+        color: var(--ink);
+        font-size: 14px;
+        font-weight: 600;
+    }
+
+    /* ---------- 17. Tarix chizig'i ---------- */
+    .op-timeline {
+        position: relative;
+        padding-left: 26px;
+    }
+
+    .op-timeline::before {
+        content: '';
+        position: absolute;
+        top: 6px;
+        bottom: 6px;
+        left: 7px;
+        width: 2px;
+        background: var(--line);
+    }
+
+    .op-timeline-item {
+        position: relative;
+        padding-bottom: 20px;
+    }
+
+    .op-timeline-item:last-child {
+        padding-bottom: 0;
+    }
+
+    .op-timeline-item::before {
+        content: '';
+        position: absolute;
+        top: 4px;
+        left: -26px;
+        width: 16px;
+        height: 16px;
+        border: 3px solid #fff;
+        border-radius: 50%;
+        background: var(--line);
+        box-shadow: 0 0 0 1px var(--line);
+    }
+
+    .op-timeline-item.is-done::before {
+        background: var(--ok);
+        box-shadow: 0 0 0 1px var(--ok);
+    }
+
+    .op-timeline-item.is-current::before {
+        background: var(--brand);
+        box-shadow: 0 0 0 1px var(--brand), 0 0 0 5px var(--brand-soft);
+    }
+
+    .op-timeline-title {
+        color: var(--ink);
+        font-size: 13.5px;
+        font-weight: 600;
+    }
+
+    .op-timeline-meta {
+        color: var(--muted);
+        font-size: 12px;
+    }
+
+    .op-timeline-note {
+        margin-top: 6px;
+        padding: 10px 12px;
+        border-radius: 10px;
+        background: #f8fafc;
+        color: var(--ink-2);
+        font-size: 12.5px;
+        line-height: 1.55;
+    }
+
+    /* ---------- 18. Modal oyna ---------- */
+    .op-modal {
+        position: fixed;
+        inset: 0;
+        z-index: 100;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+        background: rgba(15, 23, 42, 0.45);
+        backdrop-filter: blur(3px);
+    }
+
+    .op-modal.is-open {
+        display: flex;
+    }
+
+    .op-modal-box {
+        width: 100%;
+        max-width: 460px;
+        max-height: 90vh;
+        overflow-y: auto;
+        border-radius: var(--radius);
+        background: #fff;
+        box-shadow: 0 24px 60px rgba(15, 23, 42, 0.28);
+        animation: op-pop 0.18s ease-out;
+    }
+
+    @keyframes op-pop {
+        from {
+            opacity: 0;
+            transform: translateY(10px) scale(0.98);
+        }
+        to {
+            opacity: 1;
+            transform: none;
+        }
+    }
+
+    .op-modal-head {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 18px 20px;
+        border-bottom: 1px solid var(--line-soft);
+    }
+
+    .op-modal-head h3 {
+        font-size: 16px;
+    }
+
+    .op-modal-close {
+        margin-left: auto;
+        padding: 4px 8px;
+        border: none;
+        background: none;
+        color: var(--muted);
+        font-size: 22px;
+        line-height: 1;
+    }
+
+    .op-modal-close:hover {
+        color: var(--ink);
+    }
+
+    .op-modal-body {
+        padding: 20px;
+    }
+
+    .op-modal-foot {
+        display: flex;
+        gap: 10px;
+        justify-content: flex-end;
+        padding: 16px 20px;
+        border-top: 1px solid var(--line-soft);
+    }
+
+    /* ---------- 19. Xabarnomalar ---------- */
+    .op-toasts {
+        position: fixed;
+        right: 22px;
+        bottom: 22px;
+        z-index: 120;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        max-width: 340px;
+    }
+
+    .op-toast {
+        display: flex;
+        align-items: flex-start;
+        gap: 11px;
+        padding: 14px 16px;
+        border-left: 4px solid var(--brand);
+        border-radius: 12px;
+        background: #fff;
+        box-shadow: 0 12px 30px rgba(15, 23, 42, 0.16);
+        font-size: 13.5px;
+        animation: op-slide 0.22s ease-out;
+    }
+
+    .op-toast.is-success {
+        border-left-color: var(--ok);
+    }
+
+    .op-toast.is-error {
+        border-left-color: var(--danger);
+    }
+
+    .op-toast.is-warning {
+        border-left-color: var(--warn);
+    }
+
+    .op-toast.is-hiding {
+        animation: op-slide-out 0.2s ease-in forwards;
+    }
+
+    .op-toast svg {
+        flex: none;
+        width: 18px;
+        height: 18px;
+        margin-top: 1px;
+        color: var(--brand);
+    }
+
+    .op-toast.is-success svg {
+        color: var(--ok);
+    }
+
+    .op-toast.is-error svg {
+        color: var(--danger);
+    }
+
+    .op-toast.is-warning svg {
+        color: var(--warn);
+    }
+
+    .op-toast b {
+        display: block;
+        margin-bottom: 1px;
+    }
+
+    .op-toast p {
+        margin: 0;
+        color: var(--ink-2);
+        font-size: 12.5px;
+    }
+
+    @keyframes op-slide {
+        from {
+            opacity: 0;
+            transform: translateX(24px);
+        }
+        to {
+            opacity: 1;
+            transform: none;
+        }
+    }
+
+    @keyframes op-slide-out {
+        to {
+            opacity: 0;
+            transform: translateX(24px);
+        }
+    }
+
+    /* ---------- 20. Yordamchi klasslar ---------- */
+    .op-sidebar-backdrop {
+        position: fixed;
+        inset: 0;
+        z-index: 55;
+        display: none;
+        background: rgba(15, 23, 42, 0.4);
+    }
+
+    .op-sidebar-backdrop.is-open {
+        display: block;
+    }
+
+    .op-row-gap {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+    }
+
+    .op-mt-0 {
+        margin-top: 0;
+    }
+
+    /* ---------- 21. Umumiy navbat (buyurtmani o'ziga olish) ---------- */
+    /* Faqat new_orders.html uchun. Ro'yxatda hali hech kimga biriktirilmagan
+       buyurtmalar turadi. Operator "O'zimga olish" tugmasini bosgach, qator
+       ro'yxatdan o'chadi va buyurtma "Buyurtmalarim" ro'yxatiga o'tadi. */
+
+    .op-pool-hero {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+        flex-wrap: wrap;
+        margin-bottom: 20px;
+        padding: 22px 24px;
+        border-radius: var(--radius);
+        background: linear-gradient(135deg, var(--brand) 0%, var(--brand-2) 100%);
+        box-shadow: 0 14px 34px rgba(102, 126, 234, 0.3);
+        color: #fff;
+    }
+
+    .op-pool-hero-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex: none;
+        width: 52px;
+        height: 52px;
+        border-radius: 15px;
+        background: rgba(255, 255, 255, 0.18);
+    }
+
+    .op-pool-hero-icon svg {
+        width: 26px;
+        height: 26px;
+    }
+
+    .op-pool-hero-text {
+        flex: 1 1 240px;
+        min-width: 0;
+    }
+
+    .op-pool-hero-text h2 {
+        margin: 0;
+        font-size: 19px;
+        font-weight: 700;
+    }
+
+    .op-pool-hero-text p {
+        margin: 4px 0 0;
+        font-size: 13px;
+        opacity: 0.86;
+    }
+
+    .op-pool-hero-actions {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        flex-wrap: wrap;
+    }
+
+    /* Olingan qator ro'yxatdan chiqib ketayotgani ko'rinib tursin */
+    @keyframes op-row-out {
+        0% {
+            background: rgba(16, 185, 129, 0.28);
+            opacity: 1;
+        }
+        100% {
+            background: rgba(16, 185, 129, 0);
+            opacity: 0;
+            transform: translateX(24px);
+        }
+    }
+
+    .op-table tbody tr.is-taken {
+        animation: op-row-out 0.4s ease forwards;
+        pointer-events: none;
+    }
+
+    /* Navbat qoidalari eslatmasi */
+    .op-note {
+        display: flex;
+        align-items: flex-start;
+        gap: 12px;
+        margin-top: 20px;
+        padding: 16px 18px;
+        border: 1px solid var(--line);
+        border-radius: var(--radius-sm);
+        background: #fff;
+        color: var(--ink-2);
+        font-size: 13px;
+        line-height: 1.6;
+    }
+
+    .op-note svg {
+        flex: none;
+        width: 18px;
+        height: 18px;
+        margin-top: 2px;
+        color: var(--brand);
+    }
+
+    .op-note b {
+        color: var(--ink);
+    }
+
+    .op-note ul {
+        margin: 6px 0 0;
+        padding-left: 18px;
+    }
+
+    /* ---------- 22. Moslashuvchan tartib ---------- */
+    @media (max-width: 1300px) {
+        .op-detail {
+            grid-template-columns: minmax(0, 1fr);
+        }
+
+        .op-detail-col--side {
+            position: static;
+        }
+    }
+
+    @media (max-width: 1024px) {
+        .op-sidebar {
+            transform: translateX(-100%);
+            transition: transform 0.24s ease;
+        }
+
+        .op-sidebar.is-open {
+            transform: none;
+        }
+
+        .op-main {
+            margin-left: 0;
+        }
+
+        .op-burger {
+            display: inline-flex;
+        }
+
+        .op-clock {
+            display: none;
+        }
+    }
+
+    @media (max-width: 767px) {
+        .op-content {
+            padding: 16px;
+        }
+
+        .op-table th:first-child,
+        .op-table td:first-child {
+            padding-left: 16px;
+        }
+
+        .op-table th:last-child,
+        .op-table td:last-child {
+            padding-right: 16px;
+        }
+
+        .op-toolbar,
+        .op-tabs,
+        .op-pagination {
+            padding: 14px 16px;
+        }
+
+        .op-card-body {
+            padding: 16px;
+        }
+
+        .op-status-grid {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        .op-grid-2,
+        .op-facts {
+            grid-template-columns: minmax(0, 1fr);
+        }
+
+        .op-page-title p {
+            display: none;
+        }
+
+        .op-switch .op-switch-text {
+            display: none;
+        }
+
+        .op-toasts {
+            right: 12px;
+            left: 12px;
+            bottom: 12px;
+            max-width: none;
+        }
+
+        .op-product {
+            flex-direction: column;
+        }
+
+        .op-call-phone {
+            font-size: 20px;
+        }
+    }
+
+    /* Chop etishda menyu va tugmalar kerak emas */
+    @media print {
+        .op-sidebar,
+        .op-topbar,
+        .op-toolbar,
+        .op-pagination,
+        .cell-actions {
+            display: none !important;
+        }
+
+        .op-main {
+            margin-left: 0;
+        }
+
+        .op-card {
+            box-shadow: none;
+        }
+    }
+        </style>
+    </head>
+    <body class="op-body">
+
+    <!-- ====================== IKONKALAR TO'PLAMI ====================== -->
+    <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+        <defs>
+            <symbol id="i-inbox" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="22 12 16 12 14 15 10 15 8 12 2 12"/>
+                <path d="M5.5 5h13l3.5 7v6a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2v-6z"/>
+            </symbol>
+            <symbol id="i-clipboard" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round">
+                <path d="M9 3h6a1 1 0 0 1 1 1v1a1 1 0 0 1-1 1H9a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1z"/>
+                <path d="M16 5h1a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h1"/>
+                <path d="m9 14 2 2 4-4"/>
+            </symbol>
+            <symbol id="i-phone" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round">
+                <path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2 4.2 2 2 0 0 1 4 2h3a2 2 0 0 1 2 1.7c.1 1 .4 1.9.7 2.8a2 2 0 0 1-.5 2.1L8.1 9.9a16 16 0 0 0 6 6l1.3-1.1a2 2 0 0 1 2.1-.5c.9.3 1.8.6 2.8.7a2 2 0 0 1 1.7 2z"/>
+            </symbol>
+            <symbol id="i-menu" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round">
+                <line x1="3" y1="6" x2="21" y2="6"/>
+                <line x1="3" y1="12" x2="21" y2="12"/>
+                <line x1="3" y1="18" x2="21" y2="18"/>
+            </symbol>
+            <symbol id="i-clock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"/>
+                <polyline points="12 6 12 12 16 14"/>
+            </symbol>
+            <symbol id="i-logout" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round">
+                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+                <polyline points="16 17 21 12 16 7"/>
+                <line x1="21" y1="12" x2="9" y2="12"/>
+            </symbol>
+            <symbol id="i-box" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 16V8a2 2 0 0 0-1-1.7l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.7l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
+                <polyline points="3.3 7 12 12 20.7 7"/>
+                <line x1="12" y1="22" x2="12" y2="12"/>
+            </symbol>
+            <symbol id="i-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round">
+                <path d="M22 11.1V12a10 10 0 1 1-5.9-9.1"/>
+                <polyline points="22 4 12 14.1 9 11.1"/>
+            </symbol>
+            <symbol id="i-search" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="11" cy="11" r="8"/>
+                <line x1="21" y1="21" x2="16.7" y2="16.7"/>
+            </symbol>
+            <symbol id="i-refresh" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="23 4 23 10 17 10"/>
+                <polyline points="1 20 1 14 7 14"/>
+                <path d="M3.5 9a9 9 0 0 1 14.9-3.4L23 10M1 14l4.6 4.4A9 9 0 0 0 20.5 15"/>
+            </symbol>
+            <symbol id="i-hand" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round">
+                <path d="M8 11V6.5a1.5 1.5 0 0 1 3 0V11"/>
+                <path d="M11 10.5V4.8a1.5 1.5 0 0 1 3 0V11"/>
+                <path d="M14 10.8V6.3a1.5 1.5 0 0 1 3 0V15a6 6 0 0 1-6 6h-1a6 6 0 0 1-5.2-3l-2-3.5a1.5 1.5 0 0 1 2.4-1.7L8 15"/>
+            </symbol>
+            <symbol id="i-info" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"/>
+                <line x1="12" y1="16" x2="12" y2="12"/>
+                <line x1="12" y1="8" x2="12.01" y2="8"/>
+            </symbol>
+            <symbol id="i-arrow-left" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round">
+                <line x1="19" y1="12" x2="5" y2="12"/>
+                <polyline points="12 19 5 12 12 5"/>
+            </symbol>
+            <symbol id="i-map" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+                <circle cx="12" cy="10" r="3"/>
+            </symbol>
+            <symbol id="i-user" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                <circle cx="12" cy="7" r="4"/>
+            </symbol>
+            <symbol id="i-history" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round">
+                <path d="M3 3v5h5"/>
+                <path d="M3.5 15a9 9 0 1 0 .5-6.5L3 8"/>
+                <polyline points="12 7 12 12 15.5 14"/>
+            </symbol>
+            <symbol id="i-image" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
+                    stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="3" width="18" height="18" rx="2"/>
+                <circle cx="8.5" cy="8.5" r="1.5"/>
+                <polyline points="21 15 16 10 5 21"/>
+            </symbol>
+            <symbol id="i-save" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round">
+                <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/>
+                <polyline points="17 21 17 13 7 13 7 21"/>
+                <polyline points="7 3 7 8 15 8"/>
+            </symbol>
+            <symbol id="i-skip" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round">
+                <polygon points="5 4 15 12 5 20 5 4"/>
+                <line x1="19" y1="5" x2="19" y2="19"/>
+            </symbol>
+            <symbol id="i-edit" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round">
+                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+                <path d="M18.5 2.5a2.1 2.1 0 0 1 3 3L12 15l-4 1 1-4z"/>
+            </symbol>
+            <symbol id="i-download" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                <polyline points="7 10 12 15 17 10"/>
+                <line x1="12" y1="15" x2="12" y2="3"/>
+            </symbol>
+        </defs>
+    </svg>
+
+    <div class="op-shell">
+
+    <aside class="op-sidebar">
+        <div class="op-brand">
+            <span class="op-brand-mark"><svg><use href="#i-phone"/></svg></span>
+            <div class="op-brand-text">
+                <b>Nova</b>
+                <span>Operator paneli</span>
+            </div>
+        </div>
+
+        <div class="op-me">
+            <div class="op-me-avatar" title="{{ user.first_name }} {{ user.last_name }}">DK</div>
+            <div class="op-me-info">
+                <b>{{ user.first_name }} {{ user.last_name }}</b>
+                <span><i class="op-dot"></i><em data-op-status-text style="font-style:normal">Onlayn</em></span>
+            </div>
+        </div>
+
+        <nav class="op-nav">
+            <div class="op-nav-title">Ish maydoni</div>
+
+            <a href="new-orders.html" class="">
+                <svg><use href="#i-hand"/></svg>
+                Yangi buyurtmalar
+                <span class="op-nav-count is-hot">12</span>
+            </a>
+
+            <a href="{% url 'operator-list' %}" class="is-active">
+                <svg><use href="#i-inbox"/></svg>
+                Buyurtmalarim
+                <span class="op-nav-count">{{ orders_count }}</span>
+            </a>
+        </nav>
+
+        <div class="op-sidebar-foot">
+            <a href="{% url 'home' %}" class="op-logout">
+                <svg><use href="#i-inbox"/></svg>
+                Chiqish
+            </a>
+        </div>
+    </aside>
+    <div class="op-sidebar-backdrop"></div>
+
+
+        {% block operator %}
+
+        {% endblock %}
+
+
+    </div>
+
+    <!-- ====================== TEZ HOLAT O'ZGARTIRISH OYNASI ====================== -->
+    <div class="op-modal" id="statusModal" role="dialog" aria-modal="true" aria-labelledby="statusModalTitle">
+        <div class="op-modal-box">
+            <form action="" method="post" data-op-quick-status>
+                {% csrf_token %}
+
+                <div class="op-modal-head">
+                    <span class="op-card-icon"><svg><use href="#i-edit"/></svg></span>
+                    <div>
+                        <h3 id="statusModalTitle">Holatni o'zgartirish</h3>
+                        <p class="op-card-sub">
+                            <span data-op-fill="id"></span>
+                            <span data-op-fill="customer"></span>
+                        </p>
+                    </div>
+                    <button type="button" class="op-modal-close" data-op-modal-close aria-label="Yopish">&times;</button>
+                </div>
+
+                <div class="op-modal-body">
+                    <div class="op-field">
+                        <label for="quickStatus">Yangi holat</label>
+                        <select class="op-field-select" id="quickStatus" name="status" data-op-fill="status">
+
+                            {% for value, label in form.fields.status.choices %}
+                                <option value="{{ value }}">
+                                    {{ label }}
+                                </option>
+                            {% endfor %}
+
+                        </select>
+                    </div>
+
+                    <div class="op-field op-mt-0">
+                        <label for="quickComment">Izoh</label>
+                        <textarea class="op-textarea" id="quickComment" name="update_description" maxlength="500"
+                                  placeholder="Mijoz bilan suhbat natijasi..."></textarea>
+                        <p class="op-hint">Izoh so'rovnomaga yoziladi va sotuvchi kabinetida ko'rinadi.</p>
+                    </div>
+                </div>
+
+                <div class="op-modal-foot">
+                    <button type="button" class="btn btn-ghost" data-op-modal-close>Bekor qilish</button>
+                    <button type="submit" class="btn btn-primary">Saqlash</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="op-toasts"></div>
+
+    <script>
+    /* ==========================================================================
+       Operator paneli - umumiy skript
+       Hech qanday kutubxonaga bog'liq emas (jQuery kerak emas).
+       Barcha xatti-harakatlar HTML'dagi data-* atributlari orqali ulanadi,
+       shuning uchun keyinchalik Django shabloniga o'tkazganda JS o'zgarmaydi.
+       ========================================================================== */
+
+    (function (window, document) {
+        'use strict';
+
+        var Op = {};
+
+        /* ---------------------------------------------------------------------
+           1. Kichik yordamchilar
+           --------------------------------------------------------------------- */
+
+        function $(selector, scope) {
+            return (scope || document).querySelector(selector);
+        }
+
+        function $$(selector, scope) {
+            return Array.prototype.slice.call((scope || document).querySelectorAll(selector));
+        }
+
+        /**
+         * "1250000" -> "1 250 000". Summalar hamma joyda bir xil ko'rinishi uchun.
+         */
+        Op.formatNumber = function (value) {
+            var n = Math.round(Number(value) || 0);
+            return n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+        };
+
+        Op.formatSom = function (value) {
+            return Op.formatNumber(value) + " so'm";
+        };
+
+        /**
+         * Faqat raqamlarni qoldiradi - saralashda ishlatiladi.
+         */
+        function toNumber(text) {
+            var cleaned = String(text).replace(/[^\d.-]/g, '');
+            var n = parseFloat(cleaned);
+            return isNaN(n) ? 0 : n;
+        }
+
+        /**
+         * "17.08.2026 14:30" -> taqqoslash mumkin bo'lgan raqam.
+         */
+        function toDateValue(text) {
+            var m = String(text).match(/(\d{2})\.(\d{2})\.(\d{4})(?:\s+(\d{2}):(\d{2}))?/);
+            if (!m) {
+                return 0;
+            }
+            return new Date(+m[3], +m[2] - 1, +m[1], +(m[4] || 0), +(m[5] || 0)).getTime();
+        }
+
+        /**
+         * Kirish qiymatini kichik harflarga o'tkazib, ortiqcha bo'shliqlarni oladi.
+         */
+        function norm(text) {
+            return String(text || '').toLowerCase().replace(/\s+/g, ' ').trim();
+        }
+
+        var ICONS = {
+            success: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.1V12a10 10 0 1 1-5.9-9.1"/><polyline points="22 4 12 14.1 9 11.1"/></svg>',
+            error: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>',
+            warning: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>',
+            info: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>'
+        };
+
+        /* ---------------------------------------------------------------------
+           2. Xabarnomalar (toast)
+           --------------------------------------------------------------------- */
+
+        /**
+         * Op.toast("Saqlandi", {type: "success", title: "Tayyor"})
+         */
+        Op.toast = function (text, options) {
+            options = options || {};
+            var type = options.type || 'info';
+            var box = $('.op-toasts');
+
+            if (!box) {
+                box = document.createElement('div');
+                box.className = 'op-toasts';
+                document.body.appendChild(box);
+            }
+
+            var el = document.createElement('div');
+            el.className = 'op-toast is-' + type;
+            el.setAttribute('role', 'status');
+            el.innerHTML = (ICONS[type] || ICONS.info)
+                + '<div>' + (options.title ? '<b>' + options.title + '</b>' : '')
+                + '<p>' + text + '</p></div>';
+            box.appendChild(el);
+
+            var hide = function () {
+                el.classList.add('is-hiding');
+                setTimeout(function () {
+                    if (el.parentNode) {
+                        el.parentNode.removeChild(el);
+                    }
+                }, 200);
+            };
+
+            el.addEventListener('click', hide);
+            setTimeout(hide, options.timeout || 3200);
+        };
+
+        /* ---------------------------------------------------------------------
+           3. Yon menyu (kichik ekranlarda ochiladi/yopiladi)
+           --------------------------------------------------------------------- */
+
+        function initSidebar() {
+            var sidebar = $('.op-sidebar');
+            var burger = $('[data-op-burger]');
+            var backdrop = $('.op-sidebar-backdrop');
+
+            if (!sidebar || !burger) {
+                return;
+            }
+
+            function close() {
+                sidebar.classList.remove('is-open');
+                if (backdrop) {
+                    backdrop.classList.remove('is-open');
+                }
+            }
+
+            burger.addEventListener('click', function () {
+                sidebar.classList.toggle('is-open');
+                if (backdrop) {
+                    backdrop.classList.toggle('is-open', sidebar.classList.contains('is-open'));
+                }
+            });
+
+            if (backdrop) {
+                backdrop.addEventListener('click', close);
+            }
+
+            // Menyudagi havolaga bosilganda panel yopilsin
+            $$('.op-nav a', sidebar).forEach(function (link) {
+                link.addEventListener('click', close);
+            });
+        }
+
+        /* ---------------------------------------------------------------------
+           4. Soat va ish holati kaliti
+           --------------------------------------------------------------------- */
+
+        function initClock() {
+            var el = $('[data-op-clock]');
+            if (!el) {
+                return;
+            }
+
+            function pad(value) {
+                return String(value).length < 2 ? '0' + value : String(value);
+            }
+
+            function tick() {
+                var now = new Date();
+                el.textContent = pad(now.getHours()) + ':' + pad(now.getMinutes()) + ':' + pad(now.getSeconds());
+            }
+
+            tick();
+            setInterval(tick, 1000);
+        }
+
+        function initWorkSwitch() {
+            var sw = $('[data-op-switch]');
+            if (!sw) {
+                return;
+            }
+
+            var label = $('.op-switch-text', sw);
+            var dot = $('.op-me .op-dot');
+            var dotText = $('[data-op-status-text]');
+
+            sw.addEventListener('click', function () {
+                var off = sw.classList.toggle('is-off');
+
+                if (label) {
+                    label.textContent = off ? 'Tanaffusda' : 'Ish rejimi';
+                }
+                if (dot) {
+                    dot.classList.toggle('is-off', off);
+                }
+                if (dotText) {
+                    dotText.textContent = off ? 'Tanaffusda' : 'Onlayn';
+                }
+
+                Op.toast(
+                    off ? "Tanaffus rejimi yoqildi - yangi buyurtmalar boshqa operatorlarga yo'naltiriladi."
+                        : 'Ish rejimi yoqildi - yangi buyurtmalar sizga ham keladi.',
+                    {type: off ? 'warning' : 'success'}
+                );
+            });
+        }
+
+        /* ---------------------------------------------------------------------
+           5. Modal oynalar
+           Ochish:  <button data-op-modal-open="#modalId" data-fill-id="1042">
+           Yopish:  <button data-op-modal-close>
+           --------------------------------------------------------------------- */
+
+        Op.openModal = function (selector, data) {
+            var modal = typeof selector === 'string' ? $(selector) : selector;
+            if (!modal) {
+                return;
+            }
+
+            // data - {kalit: qiymat}; modal ichidagi [data-op-fill="kalit"] to'ldiriladi
+            if (data) {
+                Object.keys(data).forEach(function (key) {
+                    $$('[data-op-fill="' + key + '"]', modal).forEach(function (el) {
+                        if (el.tagName === 'INPUT' || el.tagName === 'SELECT' || el.tagName === 'TEXTAREA') {
+                            el.value = data[key];
+                        } else {
+                            el.textContent = data[key];
+                        }
+                    });
+                });
+            }
+
+            modal.classList.add('is-open');
+            document.body.style.overflow = 'hidden';
+
+            var focusable = $('input, select, textarea, button', modal);
+            if (focusable) {
+                focusable.focus();
+            }
+        };
+
+        Op.closeModal = function (modal) {
+            modal = modal || $('.op-modal.is-open');
+            if (!modal) {
+                return;
+            }
+            modal.classList.remove('is-open');
+            document.body.style.overflow = '';
+        };
+
+        function initModals() {
+            document.addEventListener('click', function (e) {
+                var opener = e.target.closest('[data-op-modal-open]');
+                if (opener) {
+                    e.preventDefault();
+                    // data-fill-id="1042" -> modal ichidagi [data-op-fill="id"]
+                    var payload = {};
+                    Object.keys(opener.dataset).forEach(function (key) {
+                        if (key.indexOf('fill') === 0 && key.length > 4) {
+                            payload[key.slice(4).toLowerCase()] = opener.dataset[key];
+                        }
+                    });
+                    var selector = opener.getAttribute('data-op-modal-open');
+
+                    // data-action="/operator/order/5/change-status" -> modal formasining
+                    // action'i. URL'ni Django yasaydi, JS faqat ko'chirib qo'yadi.
+                    var action = opener.getAttribute('data-action');
+                    if (action) {
+                        var form = $(selector + ' form');
+                        if (form) {
+                            form.setAttribute('action', action);
+                        }
+                    }
+
+                    Op.openModal(selector, payload);
+                    return;
+                }
+
+                if (e.target.closest('[data-op-modal-close]')) {
+                    e.preventDefault();
+                    Op.closeModal(e.target.closest('.op-modal'));
+                    return;
+                }
+
+                // Fon bosilganda yopish
+                if (e.target.classList.contains('op-modal')) {
+                    Op.closeModal(e.target);
+                }
+            });
+
+            document.addEventListener('keydown', function (e) {
+                if (e.key === 'Escape') {
+                    Op.closeModal();
+                }
+            });
+        }
+
+        /* ---------------------------------------------------------------------
+           6. Jadval: qidiruv + filtr + holat menyusi + saralash + sahifalash
+           Hammasi brauzer tomonida ishlaydi. Backend ulangach bu qism
+           server tomondagi filtrga almashtirilishi mumkin.
+           --------------------------------------------------------------------- */
+
+        function OpTable(root) {
+            this.root = root;
+            this.table = $('table', root);
+            this.tbody = this.table ? $('tbody', this.table) : null;
+            if (!this.tbody) {
+                return;
+            }
+
+            this.rows = $$('tr[data-status]', this.tbody);
+            this.noResultRow = $('tr.op-no-result', this.tbody);
+            // data-op-search-mode="server" - qidiruvni backend bajaradi,
+            // JS qatorlarni qayta filtrlamaydi ("/" tugmasi baribir ishlaydi)
+            this.serverSearch = root.getAttribute('data-op-search-mode') === 'server';
+            this.search = this.serverSearch ? null : $('[data-op-search]', root);
+            this.filters = $$('[data-op-filter]', root);
+            this.tabs = $$('[data-op-tab]', root);
+            this.perPage = parseInt(root.getAttribute('data-op-per-page'), 10) || 10;
+            this.page = 1;
+            this.visible = this.rows.slice();
+
+            this.bind();
+            this.apply();
+        }
+
+        OpTable.prototype.bind = function () {
+            var self = this;
+
+            if (this.search) {
+                this.search.addEventListener('input', function () {
+                    self.page = 1;
+                    self.apply();
+                });
+            }
+
+            this.filters.forEach(function (select) {
+                select.addEventListener('change', function () {
+                    self.page = 1;
+                    self.apply();
+                });
+            });
+
+            this.tabs.forEach(function (tab) {
+                tab.addEventListener('click', function () {
+                    self.tabs.forEach(function (other) {
+                        other.classList.remove('is-active');
+                    });
+                    tab.classList.add('is-active');
+                    self.page = 1;
+                    self.apply();
+                });
+            });
+
+            // Saralash
+            $$('thead th', this.table).forEach(function (th, index) {
+                if (!th.hasAttribute('data-sort')) {
+                    return;
+                }
+                th.addEventListener('click', function () {
+                    self.sort(th, index);
+                });
+            });
+
+            // Sahifa tugmalari
+            var pager = $('[data-op-pages]', this.root);
+            if (pager) {
+                pager.addEventListener('click', function (e) {
+                    var btn = e.target.closest('button[data-page]');
+                    if (!btn || btn.disabled) {
+                        return;
+                    }
+                    self.page = parseInt(btn.getAttribute('data-page'), 10);
+                    self.render();
+                    self.table.scrollIntoView({behavior: 'smooth', block: 'start'});
+                });
+            }
+        };
+
+        OpTable.prototype.activeTab = function () {
+            var active = this.tabs.filter(function (tab) {
+                return tab.classList.contains('is-active');
+            })[0];
+            return active ? active.getAttribute('data-op-tab') : 'all';
+        };
+
+        OpTable.prototype.matches = function (row) {
+            // 1) Holat menyusi
+            var tab = this.activeTab();
+            if (tab && tab !== 'all' && row.getAttribute('data-status') !== tab) {
+                return false;
+            }
+
+            // 2) Ochiladigan filtrlar: select[data-op-filter="region"] -> tr[data-region]
+            for (var i = 0; i < this.filters.length; i++) {
+                var select = this.filters[i];
+                var value = select.value;
+                if (!value || value === 'all') {
+                    continue;
+                }
+                var key = select.getAttribute('data-op-filter');
+                if (norm(row.getAttribute('data-' + key)) !== norm(value)) {
+                    return false;
+                }
+            }
+
+            // 3) Matnli qidiruv - qator ichidagi barcha matn bo'yicha
+            if (this.search && this.search.value.trim()) {
+                var needle = norm(this.search.value);
+                var haystack = norm(row.textContent + ' ' + (row.getAttribute('data-search') || ''));
+                if (haystack.indexOf(needle) === -1) {
+                    return false;
+                }
+            }
+
+            return true;
+        };
+
+        OpTable.prototype.apply = function () {
+            var self = this;
+            this.visible = this.rows.filter(function (row) {
+                return self.matches(row);
+            });
+            this.render();
+        };
+
+        OpTable.prototype.render = function () {
+            var self = this;
+            var total = this.visible.length;
+            var pages = Math.max(1, Math.ceil(total / this.perPage));
+
+            if (this.page > pages) {
+                this.page = pages;
+            }
+
+            var start = (this.page - 1) * this.perPage;
+            var end = start + this.perPage;
+
+            this.rows.forEach(function (row) {
+                row.style.display = 'none';
+            });
+
+            this.visible.slice(start, end).forEach(function (row) {
+                row.style.display = '';
+            });
+
+            if (this.noResultRow) {
+                this.noResultRow.classList.toggle('is-shown', total === 0);
+            }
+
+            // Sahifalash matni
+            var info = $('[data-op-page-info]', this.root);
+            if (info) {
+                info.textContent = total === 0
+                    ? 'Natija topilmadi'
+                    : (start + 1) + '-' + Math.min(end, total) + ' / jami ' + total + ' ta';
+            }
+
+            var pager = $('[data-op-pages]', this.root);
+            if (pager) {
+                pager.innerHTML = this.pagerHtml(pages);
+            }
+
+            // Holat menyusidagi sonlar
+            this.tabs.forEach(function (tab) {
+                var counter = $('i', tab);
+                if (!counter) {
+                    return;
+                }
+                var status = tab.getAttribute('data-op-tab');
+                counter.textContent = self.rows.filter(function (row) {
+                    return status === 'all' || row.getAttribute('data-status') === status;
+                }).length;
+            });
+        };
+
+        OpTable.prototype.pagerHtml = function (pages) {
+            if (pages <= 1) {
+                return '';
+            }
+
+            var html = '<button class="op-page" data-page="' + (this.page - 1) + '"'
+                + (this.page === 1 ? ' disabled' : '') + ' aria-label="Oldingi">&lsaquo;</button>';
+
+            // Ko'p sahifa bo'lsa faqat joriy atrofidagilar ko'rsatiladi
+            for (var i = 1; i <= pages; i++) {
+                var near = Math.abs(i - this.page) <= 1 || i === 1 || i === pages;
+                if (!near) {
+                    if (i === 2 || i === pages - 1) {
+                        html += '<button class="op-page" disabled>&hellip;</button>';
+                    }
+                    continue;
+                }
+                html += '<button class="op-page' + (i === this.page ? ' is-active' : '')
+                    + '" data-page="' + i + '">' + i + '</button>';
+            }
+
+            html += '<button class="op-page" data-page="' + (this.page + 1) + '"'
+                + (this.page === pages ? ' disabled' : '') + ' aria-label="Keyingi">&rsaquo;</button>';
+
+            return html;
+        };
+
+        OpTable.prototype.sort = function (th, index) {
+            var type = th.getAttribute('data-sort');
+            var asc = !th.classList.contains('sort-asc');
+
+            $$('thead th', this.table).forEach(function (other) {
+                other.classList.remove('sort-asc', 'sort-desc');
+            });
+            th.classList.add(asc ? 'sort-asc' : 'sort-desc');
+
+            function cellValue(row) {
+                var cell = row.cells[index];
+                if (!cell) {
+                    return '';
+                }
+                // data-value bo'lsa o'sha ishlatiladi - matn ko'rinishi saralashga xalaqit bermaydi
+                var raw = cell.getAttribute('data-value');
+                var text = raw !== null ? raw : cell.textContent.trim();
+
+                if (type === 'num') {
+                    return toNumber(text);
+                }
+                if (type === 'date') {
+                    return raw !== null ? toNumber(raw) : toDateValue(text);
+                }
+                return norm(text);
+            }
+
+            this.rows.sort(function (a, b) {
+                var va = cellValue(a);
+                var vb = cellValue(b);
+                if (va < vb) {
+                    return asc ? -1 : 1;
+                }
+                if (va > vb) {
+                    return asc ? 1 : -1;
+                }
+                return 0;
+            });
+
+            var tbody = this.tbody;
+            this.rows.forEach(function (row) {
+                tbody.appendChild(row);
+            });
+            if (this.noResultRow) {
+                tbody.appendChild(this.noResultRow);
+            }
+
+            this.page = 1;
+            this.apply();
+        };
+
+        // Sahifadagi barcha jadvallar - qator o'zgargach qayta hisoblash uchun saqlanadi
+        Op.tables = [];
+
+        function initTables() {
+            $$('[data-op-table]').forEach(function (root) {
+                Op.tables.push(new OpTable(root));
+            });
+        }
+
+        /**
+         * Qator ma'lumoti o'zgargandan keyin filtr, sanoq va sahifalashni yangilaydi.
+         */
+        Op.refreshTables = function () {
+            Op.tables.forEach(function (table) {
+                // tbody topilmagan jadval yarim holda qoladi - uni chetlab o'tamiz
+                if (table && table.rows) {
+                    table.apply();
+                }
+            });
+        };
+
+        /**
+         * Qatorni jadvaldan butunlay olib tashlaydi (masalan, buyurtma boshqa
+         * ro'yxatga o'tganda). Jadvalning ichki ro'yxatidan ham o'chiriladi,
+         * shunda sanoq va sahifalash to'g'ri qoladi.
+         */
+        Op.dropRow = function (row) {
+            Op.tables.forEach(function (table) {
+                if (!table || !table.rows) {
+                    return;
+                }
+                var index = table.rows.indexOf(row);
+                if (index !== -1) {
+                    table.rows.splice(index, 1);
+                }
+            });
+
+            if (row.parentNode) {
+                row.parentNode.removeChild(row);
+            }
+            Op.refreshTables();
+        };
+
+        /* ---------------------------------------------------------------------
+           7. Miqdor tanlagich va narx hisobi (buyurtma sahifasi)
+           Narx formulasi orders.Order.total_price bilan bir xil:
+           (mahsulot narxi - oqim chegirmasi) * miqdor
+           --------------------------------------------------------------------- */
+
+        function initQty() {
+            var box = $('[data-op-qty]');
+            if (!box) {
+                return;
+            }
+
+            var input = $('input', box);
+            var minus = $('[data-op-qty-minus]', box);
+            var plus = $('[data-op-qty-plus]', box);
+            var max = parseInt(input.getAttribute('max'), 10) || 99;
+
+            function set(name, value) {
+                var el = $('[data-op-price="' + name + '"]');
+                if (el) {
+                    el.textContent = Op.formatSom(value);
+                }
+            }
+
+            function recalc() {
+                var qty = Math.min(max, Math.max(1, parseInt(input.value, 10) || 1));
+                input.value = qty;
+
+                var price = parseFloat(box.getAttribute('data-price')) || 0;
+                var discount = parseFloat(box.getAttribute('data-discount')) || 0;
+                var delivery = parseFloat(box.getAttribute('data-delivery')) || 0;
+                var unit = price - discount;
+
+                set('unit', unit);
+                set('subtotal', price * qty);
+                set('discount', discount * qty);
+                set('delivery', delivery);
+                set('total', unit * qty + delivery);
+
+                var qtyOut = $('[data-op-price="qty"]');
+                if (qtyOut) {
+                    qtyOut.textContent = qty + ' dona';
+                }
+
+                // Omborda qolgani tugasa "+" tugmasi o'chadi
+                if (plus) {
+                    plus.disabled = qty >= max;
+                }
+                if (minus) {
+                    minus.disabled = qty <= 1;
+                }
+            }
+
+            if (minus) {
+                minus.addEventListener('click', function () {
+                    input.value = (parseInt(input.value, 10) || 1) - 1;
+                    recalc();
+                });
+            }
+
+            if (plus) {
+                plus.addEventListener('click', function () {
+                    input.value = (parseInt(input.value, 10) || 1) + 1;
+                    recalc();
+                });
+            }
+
+            input.addEventListener('input', recalc);
+            input.addEventListener('blur', recalc);
+            recalc();
+        }
+
+        /* ---------------------------------------------------------------------
+           8. Izoh maydoni: belgilar hisobi va tayyor iboralar
+           --------------------------------------------------------------------- */
+
+        function initComment() {
+            var area = $('[data-op-comment]');
+            if (!area) {
+                return;
+            }
+
+            var counter = $('[data-op-comment-count]');
+            var max = parseInt(area.getAttribute('maxlength'), 10) || 500;
+
+            function update() {
+                if (!counter) {
+                    return;
+                }
+                counter.textContent = area.value.length + ' / ' + max;
+                counter.parentNode.classList.toggle('is-limit', area.value.length >= max);
+            }
+
+            area.addEventListener('input', update);
+            update();
+
+            // Tayyor iboralar - bosilganda izohga qo'shiladi
+            $$('[data-op-chip]').forEach(function (chip) {
+                chip.addEventListener('click', function () {
+                    var text = chip.getAttribute('data-op-chip');
+                    area.value = area.value.trim() ? area.value.trim() + ' ' + text : text;
+                    area.focus();
+                    update();
+                });
+            });
+        }
+
+        /* ---------------------------------------------------------------------
+           9. Viloyat -> tuman bog'liqligi
+           Ma'lumot HTML sahifasida window.OP_REGIONS sifatida beriladi.
+           Backend ulangach uni accounts.Region / accounts.District dan olasiz.
+           --------------------------------------------------------------------- */
+
+        function initRegions() {
+            var regionSelect = $('[data-op-region]');
+            var districtSelect = $('[data-op-district]');
+            var data = window.OP_REGIONS;
+
+            if (!regionSelect || !districtSelect || !data) {
+                return;
+            }
+
+            var preselected = districtSelect.getAttribute('data-selected');
+
+            function fill() {
+                var districts = data[regionSelect.value] || [];
+                districtSelect.innerHTML = '<option value="">Tumanni tanlang</option>';
+
+                // har bir element - [tuman_id, nomi]; value'ga id ketadi, FK shuni kutadi
+                districts.forEach(function (pair) {
+                    var opt = document.createElement('option');
+                    opt.value = pair[0];
+                    opt.textContent = pair[1];
+                    if (preselected && String(pair[0]) === String(preselected)) {
+                        opt.selected = true;
+                    }
+                    districtSelect.appendChild(opt);
+                });
+
+                districtSelect.disabled = districts.length === 0;
+            }
+
+            regionSelect.addEventListener('change', function () {
+                preselected = null;
+                fill();
+            });
+
+            fill();
+        }
+
+        /* ---------------------------------------------------------------------
+           10. Klaviatura yorliqlari - operator sichqonchasiz ishlashi uchun
+           --------------------------------------------------------------------- */
+
+        function initShortcuts() {
+            document.addEventListener('keydown', function (e) {
+                var tag = (e.target.tagName || '').toLowerCase();
+                var typing = tag === 'input' || tag === 'textarea' || tag === 'select';
+
+                // "/" - qidiruvga o'tish
+                if (e.key === '/' && !typing) {
+                    var search = $('[data-op-search]');
+                    if (search) {
+                        e.preventDefault();
+                        search.focus();
+                    }
+                }
+            });
+        }
+
+        /* ---------------------------------------------------------------------
+           11. Jadval qatoriga bosilganda buyurtmani ochish
+           --------------------------------------------------------------------- */
+
+        function initRowLinks() {
+            $$('tr[data-href]').forEach(function (row) {
+                row.style.cursor = 'pointer';
+                row.addEventListener('click', function (e) {
+                    // Tugma yoki havola bosilgan bo'lsa qator ochilmaydi
+                    if (e.target.closest('button, a, input, select, label')) {
+                        return;
+                    }
+                    window.location.href = row.getAttribute('data-href');
+                });
+            });
+        }
+
+        /* ---------------------------------------------------------------------
+           12. Umumiy navbat: buyurtmani o'ziga olish (self-assign)
+           Bu ro'yxatda faqat hali hech kimga biriktirilmagan buyurtmalar turadi.
+           Operator buyurtmani olgach, qator ro'yxatdan o'chadi - buyurtma endi
+           "Buyurtmalarim" sahifasida ko'rinadi.
+
+           Backend ulanganda:
+             POST -> Order.objects.filter(pk=..., operator__isnull=True)
+                         .update(operator=request.user)
+                     0 qaytsa - boshqa operator ulgurgan, qatorni yangilash kerak.
+           --------------------------------------------------------------------- */
+
+        function initPool() {
+            var pool = $('[data-op-pool]');
+            if (!pool) {
+                return;
+            }
+
+            /**
+             * Navbatda qolgan buyurtmalar sonini hamma joyda yangilaydi:
+             * <span data-op-count>
+             */
+            function updateCount() {
+                var left = $$('tr[data-order]', pool).filter(function (row) {
+                    return !row.classList.contains('is-taken');
+                }).length;
+
+                $$('[data-op-count]').forEach(function (el) {
+                    el.textContent = left;
+                });
+            }
+
+            /**
+             * Buyurtmani o'ziga oladi: qator qisqa animatsiya bilan ro'yxatdan chiqadi.
+             */
+            function take(row) {
+                if (!row || row.classList.contains('is-taken')) {
+                    return false;
+                }
+
+                row.classList.add('is-taken');
+                updateCount();
+
+                Op.toast(
+                    (row.getAttribute('data-order') || 'Buyurtma') + " sizga biriktirildi va "
+                    + "\"Buyurtmalarim\" ro'yxatiga o'tdi. "
+                    + (row.getAttribute('data-customer') || 'Mijoz') + "ga qo'ng'iroq qiling.",
+                    {type: 'success', title: 'Buyurtma olindi'}
+                );
+
+                // Animatsiya tugagach qatorni butunlay olib tashlaymiz
+                setTimeout(function () {
+                    Op.dropRow(row);
+                }, 400);
+
+                return true;
+            }
+
+            pool.addEventListener('click', function (e) {
+                var btn = e.target.closest('[data-op-take]');
+                if (!btn) {
+                    return;
+                }
+                e.preventDefault();
+                take(btn.closest('tr'));
+            });
+
+            // "Keyingi buyurtmani olish" - ro'yxatdagi (filtrdan o'tgan) birinchi qator
+            var nextBtn = $('[data-op-take-next]');
+            if (nextBtn) {
+                nextBtn.addEventListener('click', function () {
+                    var row = $$('tr[data-order]', pool).filter(function (item) {
+                        return !item.classList.contains('is-taken') && item.style.display !== 'none';
+                    })[0];
+
+                    if (!row) {
+                        Op.toast("Navbatda buyurtma qolmadi.", {type: 'info'});
+                        return;
+                    }
+                    take(row);
+                });
+            }
+
+            updateCount();
+        }
+
+        /* ---------------------------------------------------------------------
+           13. Ishga tushirish
+           --------------------------------------------------------------------- */
+
+        function init() {
+            initSidebar();
+            initClock();
+            initWorkSwitch();
+            initModals();
+            initTables();
+            initQty();
+            initComment();
+            initRegions();
+            initShortcuts();
+            initRowLinks();
+            initPool();
+        }
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', init);
+        } else {
+            init();
+        }
+
+        window.Op = Op;
+
+    })(window, document);
+    </script>
+
+    <script>
+    /* ==========================================================================
+       Buyurtmalarim - sahifaga tegishli statik skript.
+       Backend yo'q, shuning uchun "Holatni o'zgartirish" oynasi qatorni
+       to'g'ridan-to'g'ri sahifada yangilaydi.
+       ========================================================================== */
+    (function () {
+        'use strict';
+
+        var TITLES = {
+            new: 'Yangi',
+            packaging: 'Qadoqlash',
+            shipping: 'Yetkazilmoqda',
+            delivered: 'Yetkazildi',
+            pickup_later: 'Keyin oladi',
+            returned: 'Qaytib keldi',
+            cancelled: 'Bekor qilindi',
+            hold: 'Hold',
+            archive: 'Arxiv'
+        };
+
+        // var form = document.querySelector('[data-op-quick-status]');
+        // if (!form) {
+        //     return;
+        // }
+
+    //     form.addEventListener('submit', function (e) {
+    //         e.preventDefault();
+    //
+    //         var modal = form.closest('.op-modal');
+    //         var idText = modal.querySelector('[data-op-fill="id"]').textContent.trim();
+    //         var status = modal.querySelector('#quickStatus').value;
+    //
+    //         var row = Array.prototype.slice
+    //             .call(document.querySelectorAll('.op-table tbody tr'))
+    //             .filter(function (tr) {
+    //                 var cell = tr.querySelector('.cell-id');
+    //                 return cell && cell.textContent.trim() === idText;
+    //             })[0];
+    //
+    //         if (row) {
+    //             row.setAttribute('data-status', status);
+    //             var badge = row.querySelector('.status-badge');
+    //             if (badge) {
+    //                 badge.className = 'status-badge status-' + status;
+    //                 badge.textContent = TITLES[status] || status;
+    //             }
+    //             var editBtn = row.querySelector('[data-fill-status]');
+    //             if (editBtn) {
+    //                 editBtn.setAttribute('data-fill-status', status);
+    //             }
+    //         }
+    //
+    //         modal.querySelector('#quickComment').value = '';
+    //         window.Op.closeModal(modal);
+    //         window.Op.refreshTables();
+    //         window.Op.toast(idText + ' holati "' + (TITLES[status] || status) + '" ga o\'zgartirildi.',
+    //             {type: 'success', title: 'Saqlandi'});
+    //     });
+    </script>
+
+    </body>
+</html>

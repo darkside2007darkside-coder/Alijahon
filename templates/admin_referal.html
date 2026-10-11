@@ -1,0 +1,162 @@
+{% extends 'base/admin.html' %}
+{% load static %}
+
+{% block admin_body %}
+    <style>
+        .referral-container {
+            padding: 30px 0;
+        }
+
+        .referral-card {
+            background: white;
+            border-radius: 20px;
+            padding: 32px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            margin-bottom: 24px;
+        }
+
+        .referral-header h3 {
+            font-size: 26px;
+            font-weight: 700;
+            color: #1e293b;
+            margin: 0 0 6px;
+        }
+
+        .referral-header p {
+            color: #64748b;
+            margin: 0 0 24px;
+        }
+
+        .referral-link-box {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            background: #f8fafc;
+            border: 1px dashed #cbd5e1;
+            border-radius: 12px;
+            padding: 12px 14px;
+        }
+
+        .referral-link-box input {
+            flex: 1;
+            border: none;
+            background: transparent;
+            color: #1e293b;
+            font-size: 14px;
+            outline: none;
+        }
+
+        .btn-copy {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 9px 18px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+
+        .btn-copy:hover {
+            opacity: 0.92;
+        }
+
+        .copy-feedback {
+            color: #10b981;
+            font-size: 13px;
+            margin-left: 8px;
+            display: none;
+        }
+
+        .stats-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: #eef2ff;
+            color: #4338ca;
+            padding: 8px 14px;
+            border-radius: 999px;
+            font-weight: 600;
+            font-size: 14px;
+            margin-top: 14px;
+        }
+
+        .ref-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+        }
+
+        .ref-table th, .ref-table td {
+            padding: 14px 12px;
+            text-align: left;
+            font-size: 14px;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .ref-table th {
+            color: #64748b;
+            font-weight: 600;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            background: #f8fafc;
+        }
+
+        .ref-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-right: 10px;
+            vertical-align: middle;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: #94a3b8;
+        }
+
+        .empty-state i {
+            font-size: 48px;
+            margin-bottom: 12px;
+        }
+    </style>
+    <div class="col-md-9">
+                <div class="referral-card">
+                    <div class="referral-header">
+                        <h3>Referal havola</h3>
+                        <p>Ushbu havola orqali ro'yxatdan o'tgan foydalanuvchilar sizning referallaringiz bo'ladi.</p>
+                    </div>
+
+                    <div class="referral-link-box">
+                        <input type="text" id="referral-link" value="https://alijahon.uz/register?id=40115" readonly="">
+                        <button type="button" class="btn-copy" id="copy-ref-btn">
+                            <i class="icofont-copy"></i> Nusxa olish
+                        </button>
+                        <span class="copy-feedback" id="copy-feedback">Nusxalandi!</span>
+                    </div>
+
+                    <div class="stats-pill">
+                        <i class="icofont-users-alt-4"></i>
+                        Jami referallar: 0
+                    </div>
+                </div>
+
+                <div class="referral-card">
+                    <div class="referral-header">
+                        <h3>Referallar ro'yxati</h3>
+                        <p>Sizning havolangiz orqali ro'yxatdan o'tgan foydalanuvchilar.</p>
+                    </div>
+
+
+                        <div class="empty-state">
+                            <i class="icofont-users-alt-4"></i>
+                            <div>Hozircha referallar yo'q.</div>
+                        </div>
+
+                </div>
+            </div>
+{% endblock %}

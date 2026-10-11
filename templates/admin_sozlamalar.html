@@ -1,0 +1,578 @@
+{% extends 'base/admin.html' %}
+{% load static %}
+
+{% block admin_body %}
+    <style>
+        .settings-container {
+            padding: 30px 0;
+        }
+
+        .settings-card {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+        }
+
+        .settings-header {
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #f1f5f9;
+        }
+
+        .settings-header h3 {
+            font-size: 28px;
+            font-weight: 700;
+            color: #1e293b;
+            margin: 0;
+        }
+
+        .settings-header p {
+            color: #64748b;
+            margin: 8px 0 0 0;
+        }
+
+        .form-section {
+            margin-bottom: 30px;
+        }
+
+        .form-section h5 {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #f1f5f9;
+        }
+
+        .form-group {
+            margin-bottom: 24px;
+        }
+
+        .form-group label {
+            font-weight: 600;
+            color: #475569;
+            margin-bottom: 8px;
+            display: block;
+            font-size: 14px;
+        }
+
+        .form-control, .form-select {
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            padding: 14px 18px;
+            font-size: 15px;
+            background-color: #fff;
+            color: #212529;
+        }
+
+        select.form-control, select.form-select {
+            padding: 10px 40px 10px 14px !important;
+            border-radius: 10px !important;
+            height: auto !important;
+            appearance: none !important;
+            -webkit-appearance: none !important;
+            background-color: #fff !important;
+            color: #212529 !important;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23475569' d='M6 8L1 3h10z'/%3E%3C/svg%3E") !important;
+            background-repeat: no-repeat !important;
+            background-position: right 14px center !important;
+        }
+
+        .form-control:focus, .form-select:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+        }
+
+        select.form-control option {
+            background-color: #fff;
+            color: #212529;
+        }
+
+        .btn-save {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 14px 40px;
+            font-size: 16px;
+            font-weight: 600;
+            border: none;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-save:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        @media (max-width: 768px) {
+            .settings-container {
+                padding: 15px 0;
+            }
+
+            .settings-card {
+                padding: 24px;
+            }
+
+            .settings-header h3 {
+                font-size: 24px;
+            }
+
+            .btn-save {
+                width: 100%;
+            }
+        }
+    </style>
+    <div class="col-md-9">
+
+                <!-- Profil ma'lumotlari -->
+                <div class="settings-card mb-4">
+                    <div class="settings-header">
+                        <h3>Sozlamalar</h3>
+                        <p>Profil ma'lumotlaringizni tahrirlang</p>
+                    </div>
+
+                    <form action="{% url 'admin-sozlamalar' %}" method="post" enctype="multipart/form-data" novalidate="">
+                        {% csrf_token %}
+
+
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="id_first_name">Ism</label>
+                                    <input type="text" name="first_name" id="id_first_name" class="form-control " value="{{ form.first_name.value|default:'' }}">
+
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="id_last_name">Familiya</label>
+                                    <input type="text" name="last_name" id="id_last_name" class="form-control " value="{{ form.last_name.value|default:'' }}">
+
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="id_region">Viloyat</label>
+                                    <select name="region" id="id_region" class="form-control">
+                                        <option value="">Viloyatni tanlang</option>
+
+                                        {% for region in regions %}
+                                            <option value="{{ region.id }}"
+                                                {% if region.id == user.region.id %}
+                                                    selected
+                                                {% endif %}>
+                                                    {{ region.title }}
+                                            </option>
+                                        {% endfor %}
+
+                                    </select>
+
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="id_district">Tuman / Shahar</label>
+                                    <select name="district" id="id_district" class="form-control ">
+                                        <option value="">Tumanni tanlang</option>
+
+                                        {% for district in districts %}
+                                            <option value="{{ district.id }}"
+                                                {% if district.id == user.district.id %}selected{% endif %}>
+                                                {{ district.title }}
+                                            </option>
+                                        {% endfor %}
+
+                                    </select>
+
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="id_telegram_id">Telegram ID</label>
+                            <input type="text" name="telegram_id" id="id_telegram_id" class="form-control " value="{{ form.telegram_id.value|default:'' }}">
+
+                        </div>
+
+                        <div class="form-group">
+                            <label for="id_description">Haqida</label>
+                            <textarea name="description" id="id_description" rows="3" class="form-control ">{{ form.description.value|default:'' }}</textarea>
+                        </div>
+
+                        <div class="text-end">
+                            <button type="submit" class="btn btn-save">
+                                <i><img width="20" height="20" src="https://img.icons8.com/external-smashingstocks-basic-outline-smashing-stocks/53/FFFFFF/external-floppy-disk-science-and-education-smashingstocks-basic-outline-smashing-stocks.png" alt="external-floppy-disk-science-and-education-smashingstocks-basic-outline-smashing-stocks"/></i> Saqlash
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Parol almashtirish -->
+                <div class="settings-card">
+                    <div class="settings-header">
+                        <h3>Parolni o'zgartirish</h3>
+                        <p>Hisobingiz xavfsizligi uchun parolni muntazam yangilang</p>
+                    </div>
+
+                    <form action="{% url 'admin-change-password' %}" method="post" novalidate="">
+                        {% csrf_token %}
+
+                        <input type="hidden" name="change_password" value="1">
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="id_new_password">Yangi parol</label>
+                                    <input type="password" name="new_password" id="id_new_password" class="form-control" placeholder="Yangi parol (kamida 6 belgi)">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="id_confirm_password">Yangi parolni tasdiqlang</label>
+                                    <input type="password" name="confirm_password" id="id_confirm_password" class="form-control" placeholder="Yangi parolni qayta kiriting">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="text-end">
+                            <button type="submit" class="btn btn-save">
+                                <i><img width="20" height="20" src="https://img.icons8.com/parakeet-filled/48/FFFFFF/key-security.png" alt="key-security"/></i> Parolni o'zgartirish
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+            </div>
+    <script>
+        const regionSelect = document.getElementById("id_region");
+        const districtSelect = document.getElementById("id_district");
+
+        regionSelect.addEventListener("change", function () {
+            const regionId = this.value;
+
+            districtSelect.innerHTML =
+                '<option value="">Tumanni tanlang</option>';
+
+            if (!regionId) {
+                return;
+            }
+
+            fetch(`/districts/?region=${regionId}`)
+                .then(response => response.json())
+                .then(data => {
+                    data.forEach(district => {
+                        const option = document.createElement("option");
+
+                        option.value = district.id;
+                        option.textContent = district.title;
+
+                        districtSelect.appendChild(option);
+                    });
+                });
+        });
+    </script>
+    <script>
+        const districts = {
+            "qoraqalpogiston": [
+                {value: "amudaryo", label: "Amudaryo tumani"},
+                {value: "beruniy", label: "Beruniy tumani"},
+                {value: "bozatau", label: "Bo'zatov tumani"},
+                {value: "chimboy", label: "Chimboy tumani"},
+                {value: "ellikqala", label: "Ellikqal'a tumani"},
+                {value: "kegeyli", label: "Kegeyli tumani"},
+                {value: "moynoq", label: "Mo'ynoq tumani"},
+                {value: "nukus", label: "Nukus tumani"},
+                {value: "qanlikol", label: "Qanliko'l tumani"},
+                {value: "qaraozak", label: "Qarao'zak tumani"},
+                {value: "qongirot", label: "Qo'ng'irot tumani"},
+                {value: "shumanay", label: "Shumanay tumani"},
+                {value: "taxtakopir", label: "Taxtako'pir tumani"},
+                {value: "tortkol", label: "To'rtko'l tumani"},
+                {value: "xojayli", label: "Xo'jayli tumani"},
+                {value: "taxiatosh", label: "Taxiatosh tumani"},
+                {value: "nukus_shahri", label: "Nukus shahri"}
+            ],
+
+            "xorazm": [
+                {value: "bogot", label: "Bog'ot tumani"},
+                {value: "gurlan", label: "Gurlan tumani"},
+                {value: "qoshkopir", label: "Qo'shko'pir tumani"},
+                {value: "shovot", label: "Shovot tumani"},
+                {value: "urganch", label: "Urganch tumani"},
+                {value: "xiva", label: "Xiva tumani"},
+                {value: "yangiariq", label: "Yangiariq tumani"},
+                {value: "yangibozor", label: "Yangibozor tumani"},
+                {value: "hazorasp", label: "Hazorasp tumani"},
+                {value: "tuproqqala", label: "Tuproqqal'a tumani"},
+                {value: "urganch_shahri", label: "Urganch shahri"},
+                {value: "xiva_shahri", label: "Xiva shahri"}
+            ],
+
+            "navoiy": [
+                {value: "karmana", label: "Karmana tumani"},
+                {value: "konimex", label: "Konimex tumani"},
+                {value: "navbahor", label: "Navbahor tumani"},
+                {value: "nurota", label: "Nurota tumani"},
+                {value: "qiziltepa", label: "Qiziltepa tumani"},
+                {value: "tomdi", label: "Tomdi tumani"},
+                {value: "uchquduq", label: "Uchquduq tumani"},
+                {value: "xatirchi", label: "Xatirchi tumani"},
+                {value: "navoiy_shahri", label: "Navoiy shahri"},
+                {value: "zarafshon_shahri", label: "Zarafshon shahri"},
+                {value: "gozgon_shahri", label: "G'ozg'on shahri"}
+            ],
+
+            "buxoro": [
+                {value: "buxoro", label: "Buxoro tumani"},
+                {value: "gijduvon", label: "G'ijduvon tumani"},
+                {value: "jondor", label: "Jondor tumani"},
+                {value: "kogon", label: "Kogon tumani"},
+                {value: "olot", label: "Olot tumani"},
+                {value: "peshku", label: "Peshku tumani"},
+                {value: "qorakol", label: "Qorako'l tumani"},
+                {value: "qorovulbozor", label: "Qorovulbozor tumani"},
+                {value: "romitan", label: "Romitan tumani"},
+                {value: "shofirkon", label: "Shofirkon tumani"},
+                {value: "vobkent", label: "Vobkent tumani"},
+                {value: "buxoro_shahri", label: "Buxoro shahri"},
+                {value: "kogon_shahri", label: "Kogon shahri"}
+            ],
+
+            "samarqand": [
+                {value: "bulungur", label: "Bulung'ur tumani"},
+                {value: "ishtixon", label: "Ishtixon tumani"},
+                {value: "jomboy", label: "Jomboy tumani"},
+                {value: "kattaqorgon", label: "Kattaqo'rg'on tumani"},
+                {value: "qoshrabot", label: "Qo'shrabot tumani"},
+                {value: "narpay", label: "Narpay tumani"},
+                {value: "nurobod", label: "Nurobod tumani"},
+                {value: "oqdaryo", label: "Oqdaryo tumani"},
+                {value: "paxtachi", label: "Paxtachi tumani"},
+                {value: "payariq", label: "Payariq tumani"},
+                {value: "pastdargom", label: "Pastdarg'om tumani"},
+                {value: "samarqand", label: "Samarqand tumani"},
+                {value: "toyloq", label: "Toyloq tumani"},
+                {value: "urgut", label: "Urgut tumani"},
+                {value: "samarqand_shahri", label: "Samarqand shahri"},
+                {value: "kattaqorgon_shahri", label: "Kattaqo'rg'on shahri"}
+            ],
+
+            "qashqadaryo": [
+                {value: "chiroqchi", label: "Chiroqchi tumani"},
+                {value: "dehqonobod", label: "Dehqonobod tumani"},
+                {value: "guzor", label: "G'uzor tumani"},
+                {value: "kasbi", label: "Kasbi tumani"},
+                {value: "kitob", label: "Kitob tumani"},
+                {value: "kokdala", label: "Ko'kdala tumani"},
+                {value: "koson", label: "Koson tumani"},
+                {value: "mirishkor", label: "Mirishkor tumani"},
+                {value: "muborak", label: "Muborak tumani"},
+                {value: "nishon", label: "Nishon tumani"},
+                {value: "qamashi", label: "Qamashi tumani"},
+                {value: "qarshi", label: "Qarshi tumani"},
+                {value: "shahrisabz", label: "Shahrisabz tumani"},
+                {value: "yakkabog", label: "Yakkabog' tumani"},
+                {value: "qarshi_shahri", label: "Qarshi shahri"},
+                {value: "shahrisabz_shahri", label: "Shahrisabz shahri"}
+            ],
+
+            "surxondaryo": [
+                {value: "angor", label: "Angor tumani"},
+                {value: "bandixon", label: "Bandixon tumani"},
+                {value: "boysun", label: "Boysun tumani"},
+                {value: "denov", label: "Denov tumani"},
+                {value: "jarkorgon", label: "Jarqo'rg'on tumani"},
+                {value: "muzrabot", label: "Muzrabot tumani"},
+                {value: "oltinsoy", label: "Oltinsoy tumani"},
+                {value: "qiziriq", label: "Qiziriq tumani"},
+                {value: "qumqorgon", label: "Qumqo'rg'on tumani"},
+                {value: "sariosiyo", label: "Sariosiyo tumani"},
+                {value: "sherobod", label: "Sherobod tumani"},
+                {value: "shorchi", label: "Sho'rchi tumani"},
+                {value: "termiz", label: "Termiz tumani"},
+                {value: "uzun", label: "Uzun tumani"},
+                {value: "termiz_shahri", label: "Termiz shahri"}
+            ],
+
+            "jizzax": [
+                {value: "arnasoy", label: "Arnasoy tumani"},
+                {value: "baxmal", label: "Baxmal tumani"},
+                {value: "dostlik", label: "Do'stlik tumani"},
+                {value: "forish", label: "Forish tumani"},
+                {value: "gallaorol", label: "G'allaorol tumani"},
+                {value: "mirzachol", label: "Mirzacho'l tumani"},
+                {value: "paxtakor", label: "Paxtakor tumani"},
+                {value: "sharof_rashidov", label: "Sharof Rashidov tumani"},
+                {value: "yangiobod", label: "Yangiobod tumani"},
+                {value: "zafarobod", label: "Zafarobod tumani"},
+                {value: "zarbdor", label: "Zarbdor tumani"},
+                {value: "jizzax_shahri", label: "Jizzax shahri"}
+            ],
+
+            "sirdaryo": [
+                {value: "boyovut", label: "Boyovut tumani"},
+                {value: "guliston", label: "Guliston tumani"},
+                {value: "mirzaobod", label: "Mirzaobod tumani"},
+                {value: "oqoltin", label: "Oqoltin tumani"},
+                {value: "sayxunobod", label: "Sayxunobod tumani"},
+                {value: "sardoba", label: "Sardoba tumani"},
+                {value: "sirdaryo", label: "Sirdaryo tumani"},
+                {value: "xovos", label: "Xovos tumani"},
+                {value: "guliston_shahri", label: "Guliston shahri"},
+                {value: "shirin_shahri", label: "Shirin shahri"},
+                {value: "yangiyer_shahri", label: "Yangiyer shahri"}
+            ],
+
+            "toshkent_viloyati": [
+                {value: "bekobod", label: "Bekobod tumani"},
+                {value: "boka", label: "Bo'ka tumani"},
+                {value: "bostonliq", label: "Bo'stonliq tumani"},
+                {value: "chinoz", label: "Chinoz tumani"},
+                {value: "ohangaron", label: "Ohangaron tumani"},
+                {value: "oqqorgon", label: "Oqqo'rg'on tumani"},
+                {value: "parkent", label: "Parkent tumani"},
+                {value: "piskent", label: "Piskent tumani"},
+                {value: "qibray", label: "Qibray tumani"},
+                {value: "quyichirchiq", label: "Quyi Chirchiq tumani"},
+                {value: "toshkent", label: "Toshkent tumani"},
+                {value: "ortachirchiq", label: "O'rta Chirchiq tumani"},
+                {value: "yuqorichirchiq", label: "Yuqori Chirchiq tumani"},
+                {value: "yangiyol", label: "Yangiyo'l tumani"},
+                {value: "zangiota", label: "Zangiota tumani"},
+                {value: "nurafshon_shahri", label: "Nurafshon shahri"},
+                {value: "olmaliq_shahri", label: "Olmaliq shahri"},
+                {value: "angren_shahri", label: "Angren shahri"},
+                {value: "bekobod_shahri", label: "Bekobod shahri"},
+                {value: "chirchiq_shahri", label: "Chirchiq shahri"},
+                {value: "ohangaron_shahri", label: "Ohangaron shahri"},
+                {value: "yangiyol_shahri", label: "Yangiyo'l shahri"}
+            ],
+
+            "namangan": [
+                {value: "chortoq", label: "Chortoq tumani"},
+                {value: "chust", label: "Chust tumani"},
+                {value: "kosonsoy", label: "Kosonsoy tumani"},
+                {value: "mingbuloq", label: "Mingbuloq tumani"},
+                {value: "namangan", label: "Namangan tumani"},
+                {value: "norin", label: "Norin tumani"},
+                {value: "pop", label: "Pop tumani"},
+                {value: "toraqorgon", label: "To'raqo'rg'on tumani"},
+                {value: "uchqorgon", label: "Uchqo'rg'on tumani"},
+                {value: "uychi", label: "Uychi tumani"},
+                {value: "yangiqorgon", label: "Yangiqo'rg'on tumani"},
+                {value: "namangan_shahri", label: "Namangan shahri"}
+            ],
+
+            "fargona": [
+                {value: "bagdod", label: "Bag'dod tumani"},
+                {value: "beshariq", label: "Beshariq tumani"},
+                {value: "buvaydo", label: "Buvaydo tumani"},
+                {value: "dangara", label: "Dang'ara tumani"},
+                {value: "fargona", label: "Farg'ona tumani"},
+                {value: "furqat", label: "Furqat tumani"},
+                {value: "oltiariq", label: "Oltiariq tumani"},
+                {value: "ozbekiston", label: "O'zbekiston tumani"},
+                {value: "qoshtepa", label: "Qo'shtepa tumani"},
+                {value: "quva", label: "Quva tumani"},
+                {value: "rishton", label: "Rishton tumani"},
+                {value: "sox", label: "So'x tumani"},
+                {value: "toshloq", label: "Toshloq tumani"},
+                {value: "uchkoprik", label: "Uchko'prik tumani"},
+                {value: "yozyovon", label: "Yozyovon tumani"},
+                {value: "fargona_shahri", label: "Farg'ona shahri"},
+                {value: "qoqon_shahri", label: "Qo'qon shahri"},
+                {value: "quvasoy_shahri", label: "Quvasoy shahri"},
+                {value: "margilon_shahri", label: "Marg'ilon shahri"}
+            ],
+
+            "andijon": [
+                {value: "andijon", label: "Andijon tumani"},
+                {value: "asaka", label: "Asaka tumani"},
+                {value: "baliqchi", label: "Baliqchi tumani"},
+                {value: "boz", label: "Bo'z tumani"},
+                {value: "buloqboshi", label: "Buloqboshi tumani"},
+                {value: "izboskan", label: "Izboskan tumani"},
+                {value: "jalaquduq", label: "Jalaquduq tumani"},
+                {value: "marhamat", label: "Marhamat tumani"},
+                {value: "oltinkol", label: "Oltinko'l tumani"},
+                {value: "paxtaobod", label: "Paxtaobod tumani"},
+                {value: "qorgontepa", label: "Qo'rg'ontepa tumani"},
+                {value: "shahrixon", label: "Shahrixon tumani"},
+                {value: "ulugnor", label: "Ulug'nor tumani"},
+                {value: "xojabod", label: "Xo'jaobod tumani"},
+                {value: "andijon_shahri", label: "Andijon shahri"},
+                {value: "xonobod_shahri", label: "Xonobod shahri"}
+            ],
+
+            "toshkent_shahar": [
+                {value: "bektemir", label: "Bektemir tumani"},
+                {value: "chilonzor", label: "Chilonzor tumani"},
+                {value: "yashnobod", label: "Yashnobod tumani"},
+                {value: "mirobod", label: "Mirobod tumani"},
+                {value: "mirzo_ulugbek", label: "Mirzo Ulug'bek tumani"},
+                {value: "sergeli", label: "Sergeli tumani"},
+                {value: "shayxontohur", label: "Shayxontohur tumani"},
+                {value: "olmazor", label: "Olmazor tumani"},
+                {value: "uchtepa", label: "Uchtepa tumani"},
+                {value: "yakkasaroy", label: "Yakkasaroy tumani"},
+                {value: "yunusobod", label: "Yunusobod tumani"},
+                {value: "yangihayot", label: "Yangihayot tumani"}
+            ]
+        };
+
+
+        const regionSelect = document.getElementById("id_region");
+        const districtSelect = document.getElementById("id_district");
+
+        const savedRegion = "{{ form.instance.region|default:''|escapejs }}";
+        const savedDistrict = "{{ form.instance.district|default:''|escapejs }}";
+
+
+        function loadDistricts(region, selectedDistrict = "") {
+
+            districtSelect.innerHTML =
+                '<option value="">Tumanni tanlang</option>';
+
+            if (!districts[region]) {
+                return;
+            }
+
+            districts[region].forEach(function (district) {
+
+                const option = document.createElement("option");
+
+                option.value = district.value;
+                option.textContent = district.label;
+
+                if (district.value === selectedDistrict) {
+                    option.selected = true;
+                }
+
+                districtSelect.appendChild(option);
+            });
+        }
+
+
+        // Выбор новой области
+        regionSelect.addEventListener("change", function () {
+
+            // При смене области старый район сбрасываем
+            loadDistricts(this.value);
+
+        });
+
+
+        // Восстанавливаем сохранённые данные после загрузки страницы
+        if (savedRegion) {
+
+            regionSelect.value = savedRegion;
+
+            loadDistricts(savedRegion, savedDistrict);
+        }
+    </script>
+{% endblock %}

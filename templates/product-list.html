@@ -1,0 +1,165 @@
+{% extends 'base/base.html' %}
+{% load static %}
+{% load humanize %}
+
+{% block body %}
+    <section class="products-listing-page py-4">
+        <div class="container">
+            <div class="row g-4">
+                <!-- Sidebar Categories -->
+                <div class="col-lg-3">
+                    <aside class="sidebar-filters">
+                        <div class="filter-card">
+                            <div class="filter-header" id="filterToggleBtn">
+                                <h5 class="filter-title">
+                                    <i><img width="20" height="20" src="https://img.icons8.com/ios-filled/50/FFFFFF/filter--v1.png" alt="filter--v1"/></i>
+                                    Kategoriyalar
+                                </h5>
+                                <button class="mobile-toggle-btn d-lg-none" type="button">
+                                    <i class="icofont-rounded-down"></i>
+                                </button>
+                            </div>
+                            <div class="filter-body collapsed" id="filterBody">
+                                <nav class="categories-nav">
+                                    {% for c in categories %}
+                                        <a href="{% url 'category-detail' c.slug %}" class="category-link ">
+                                            <span class="category-name">{{ c.title }}</span>
+<!--                                            <i class="icofont-rounded-right">-->
+                                            <i><img width="15" height="15" src="https://img.icons8.com/ios-glyphs/30/forward.png" alt="forward"/></i>
+                                        </a>
+                                    {% endfor %}
+                                </nav>
+                            </div>
+                        </div>
+                    </aside>
+                </div>
+
+                <!-- Main Content -->
+                <div class="col-lg-9">
+                    <!-- Breadcrumb & Title -->
+                    <div class="page-header mb-4">
+                        <div class="breadcrumb-wrapper">
+                            <a href="{% url 'home' %}" class="breadcrumb-link">
+<!--                                <i class="icofont-home">-->
+                                <i><img width="17" height="17" src="https://img.icons8.com/ios-filled/50/228BE6/home.png" alt="home"/></i>
+                                Bosh sahifa
+                            </a>
+                            <span class="breadcrumb-separator">
+                                <i><img width="10" height="10" src="https://img.icons8.com/ios-glyphs/30/forward.png" alt="forward"/></i>
+                            </span>
+
+                                <span class="breadcrumb-current">Barchasi</span>
+
+                        </div>
+
+                        <h1 class="page-title">
+
+                                Barcha mahsulotlar
+
+                        </h1>
+                    </div>
+
+                    <!-- Products Grid -->
+                    <div class="products-grid">
+                        <div class="row g-3">
+                            {% for product in products %}
+                                <div class="col-6 col-md-4">
+                                    <div class="product-card">
+                                        <a href="{% url 'product-detail' product.slug %}" class="product-image-link">
+                                            <div class="product-image-wrapper">
+                                                <img src="{{ product.thumbnail_image.image.url }}" class="product-image" alt="Kemiruvchilar uchun moslama" loading="lazy">
+                                            </div>
+                                        </a>
+                                        <div class="product-info">
+                                            <h6 class="product-title">
+                                                <a href="{% url 'product-detail' product.slug %}">
+                                                    {{ product.title }}
+                                                </a>
+                                            </h6>
+                                            <p class="product-price">
+                                                {{ product.price|intcomma }}
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            {% endfor %}
+
+                        </div>
+                    </div>
+
+                    <!-- Pagination -->
+
+                        <div class="pagination-wrapper mt-5">
+                            <nav aria-label="Sahifalar navigatsiyasi">
+                                <ul class="custom-pagination">
+                                    <!-- Previous Button -->
+
+                                        <li class="page-item disabled">
+                                            <span class="page-link">
+                                                <i class="icofont-rounded-left"></i>
+                                            </span>
+                                        </li>
+
+
+                                    <!-- First Page -->
+
+
+                                    <!-- Page Numbers -->
+
+
+                                            <li class="page-item active">
+                                                <a class="page-link" href="?page=1">1</a>
+                                            </li>
+
+
+
+                                            <li class="page-item ">
+                                                <a class="page-link" href="?page=2">2</a>
+                                            </li>
+
+
+
+                                            <li class="page-item ">
+                                                <a class="page-link" href="?page=3">3</a>
+                                            </li>
+
+
+
+
+
+
+
+
+
+
+
+                                    <!-- Last Page -->
+
+                                        <li class="page-item disabled">
+                                            <span class="page-link">...</span>
+                                        </li>
+                                        <li class="page-item">
+                                            <a class="page-link" href="?page=7">
+                                                7
+                                            </a>
+                                        </li>
+
+
+                                    <!-- Next Button -->
+
+                                        <li class="page-item">
+                                            <a class="page-link" href="?page=2" aria-label="Keyingi">
+                                                <i class="icofont-rounded-right"></i>
+                                            </a>
+                                        </li>
+
+                                </ul>
+                            </nav>
+                        </div>
+
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}

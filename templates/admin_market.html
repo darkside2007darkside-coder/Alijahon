@@ -1,0 +1,577 @@
+{% extends 'base/admin.html' %}
+{% load static %}
+{% load humanize %}
+
+{% block admin_body %}
+    <style>
+        .market-container {
+            padding: 30px 0;
+        }
+
+        .market-header {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+        }
+
+        .market-header h3 {
+            font-size: 28px;
+            font-weight: 700;
+            color: #1e293b;
+            margin-bottom: 24px;
+            text-align: center;
+        }
+
+        .category-tabs {
+            display: flex;
+            gap: 10px;
+            overflow-x: auto;
+            padding: 10px 0;
+            margin-bottom: 20px;
+            scrollbar-width: thin;
+        }
+
+        .category-tabs::-webkit-scrollbar {
+            height: 6px;
+        }
+
+        .category-tabs::-webkit-scrollbar-track {
+            background: #f1f5f9;
+            border-radius: 10px;
+        }
+
+        .category-tabs::-webkit-scrollbar-thumb {
+            background: #667eea;
+            border-radius: 10px;
+        }
+
+        .category-btn {
+            padding: 10px 24px;
+            border: 2px solid #e2e8f0;
+            background: white;
+            border-radius: 30px;
+            font-weight: 600;
+            color: #64748b;
+            white-space: nowrap;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .category-btn:hover,
+        .category-btn.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-color: transparent;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(102, 126, 234, 0.4);
+            text-decoration: none;
+        }
+
+        .search-box-modern {
+            position: relative;
+        }
+
+        .search-box-modern input {
+            width: 100%;
+            padding: 14px 50px 14px 20px;
+            border: 2px solid #e2e8f0;
+            border-radius: 30px;
+            font-size: 15px;
+            transition: all 0.3s ease;
+        }
+
+        .search-box-modern input:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+            outline: none;
+        }
+
+        .search-box-modern button {
+            position: absolute;
+            right: 5px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            color: white;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .search-box-modern button:hover {
+            transform: translateY(-50%) scale(1.1);
+        }
+
+        .product-card-modern {
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .product-card-modern:hover {
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+            transform: translateY(-8px);
+        }
+
+        .product-image {
+            position: relative;
+            overflow: hidden;
+            height: 220px;
+        }
+
+        .product-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+
+        .product-card-modern:hover .product-image img {
+            transform: scale(1.1);
+        }
+
+        .product-badge {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            color: white;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .product-body {
+            padding: 20px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .product-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 12px;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .product-title a {
+            color: #1e293b;
+            text-decoration: none;
+        }
+
+        .product-title a:hover {
+            color: #667eea;
+        }
+
+        .product-price {
+            font-size: 20px;
+            font-weight: 700;
+            color: #667eea;
+            margin-bottom: 16px;
+        }
+
+        .product-details {
+            list-style: none;
+            padding: 0;
+            margin: 0 0 16px 0;
+            flex: 1;
+        }
+
+        .product-details li {
+            padding: 8px 0;
+            border-bottom: 1px solid #f1f5f9;
+            display: flex;
+            justify-content: space-between;
+            font-size: 14px;
+        }
+
+        .product-details li:last-child {
+            border-bottom: none;
+        }
+
+        .product-details li span:first-child {
+            color: #64748b;
+        }
+
+        .product-details li strong {
+            color: #1e293b;
+        }
+
+        .product-actions {
+            display: flex;
+            gap: 8px;
+            flex-direction: column;
+        }
+
+        .product-btn {
+            padding: 12px 20px;
+            border-radius: 12px;
+            border: none;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            text-decoration: none;
+            display: block;
+        }
+
+        .product-btn.primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .product-btn.primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(102, 126, 234, 0.4);
+            color: white;
+            text-decoration: none;
+        }
+
+        .product-btn.secondary {
+            background: #f1f5f9;
+            color: #475569;
+        }
+
+        .product-btn.secondary:hover {
+            background: #e2e8f0;
+            color: #334155;
+            text-decoration: none;
+        }
+
+        @media (max-width: 768px) {
+            .market-container {
+                padding: 15px 0;
+            }
+
+            .market-header {
+                padding: 20px;
+                margin-bottom: 20px;
+            }
+
+            .market-header h3 {
+                font-size: 22px;
+            }
+
+            .category-tabs {
+                gap: 8px;
+            }
+
+            .category-btn {
+                padding: 8px 16px;
+                font-size: 13px;
+            }
+
+            .product-image {
+                height: 180px;
+            }
+
+            .product-body {
+                padding: 16px;
+            }
+        }
+    </style>
+    <div class="col-md-9">
+                <!-- Modal -->
+                <div class="modal fade" id="edit-profile-modal" tabindex="-1" role="dialog">
+                    <div class="modal-dialog modal-dialog-centered" role="document">
+                        <div class="modal-content" style="border-radius: 20px; border: none;">
+                            <div class="modal-header" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border-radius: 20px 20px 0 0;">
+                                <h5 class="modal-title">
+                                    <i class="icofont-link"></i> Oqim yaratish
+                                </h5>
+                                <button type="button" class="close text-white" data-dismiss="modal">
+                                    <span>×</span>
+                                </button>
+                            </div>
+                            <div class="modal-body" style="padding: 30px;">
+                                <form action="{% url 'admin-oqim-create' %}" method="POST" class="form-class">
+                                    {% csrf_token %}
+                                    <input name="product_id" type="hidden" id="hidden_product" value="">
+
+                                        <div class="form-group mb-3">
+                                            <label class="font-weight-bold">Oqim nomi</label>
+                                            <input type="text" name="title" class="form-control" placeholder="" mt-2="Oqim uchun nom kiriting" required="" id="id_title">
+                                        </div>
+
+                                        <div class="form-group mb-3">
+                                            <label class="font-weight-bold">Chegirma</label>
+                                            <input type="number" name="discount" class="form-control" placeholder="" mt-2="Chegirma miqdori: {{ product.benefit }} so'mgacha" id="id_discount">
+
+                                        </div>
+
+                                    <button type="submit" class="btn btn-primary w-100 mt-3" style="padding: 12px; border-radius: 12px;">
+                                        <i class="icofont-check"></i> Oqim yaratish
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="market-header">
+                    <h3>
+                        <i><img width="30" height="30" src="https://img.icons8.com/glyph-neue/64/1A1A1A/fast-cart.png" alt="fast-cart"/></i> Sotuvdagi Mahsulotlar
+                    </h3>
+
+                    <div class="category-tabs">
+                        <a href="{% url 'admin-market' %}" class="category-btn {% if active_category is None %}active{% endif %}">Hammasi</a>
+
+                        {% for category in categories %}
+                            <a href="{% url 'admin-market-category' category.slug %}" class="category-btn {% if active_category == category %}active{% endif %}">
+                                {{ category.title }}
+                            </a>
+                        {% endfor %}
+
+
+                    </div>
+
+                    <div class="search-box-modern">
+                        <form action="market" method="GET" autocomplete="off">
+                            <input id="search-input" name="q" class="search-input" type="search" placeholder="Mahsulot qidirish...">
+                            <button type="submit">
+                                <i><img width="20" height="20" src="https://img.icons8.com/pastel-glyph/128/FFFFFF/search--v1.png" alt="search--v1"/></i>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+
+
+
+                <div class="row">
+
+                    {% for product in products %}
+                        <div class="col-lg-4 col-md-6 mb-4">
+                            <div class="product-card-modern">
+                                <div class="product-image">
+                                    <a href="{% url 'product-detail' product.slug %}" target="_blank">
+                                        <img src="{{ product.thumbnail_image.image.url }}" alt="{{ product.title }}">
+                                    </a>
+
+                                </div>
+
+                                <div class="product-body">
+                                    <div class="product-title">
+                                        <a href="{% url 'admin-market' %}" target="_blank">
+                                            {{ product.title }}
+                                        </a>
+                                    </div>
+
+                                    <div class="product-price">{{ product.price|intcomma }} so'm</div>
+
+                                    <ul class="product-details">
+                                        <li>
+                                            <span>To'lov:</span>
+                                            <strong>{{ product.payment|intcomma }} so'm</strong>
+                                        </li>
+                                        <li>
+                                            <span>Zaxirada:</span>
+                                            <strong>{{ product.quantity }} ta</strong>
+                                        </li>
+                                    </ul>
+
+
+
+
+                                    <div class="product-actions">
+                                        <button
+                                            type="button"
+                                            class="product-btn primary btn_open_modal"
+                                            data-toggle="modal"
+                                            data-target="#edit-profile-modal"
+                                            data-product-id="{{ product.id }}">
+                                            <i>
+                                                <img
+                                                    width="15"
+                                                    height="15"
+                                                    src="https://img.icons8.com/ios-filled/50/FFFFFF/chain.png"
+                                                    alt="chain"
+                                                >
+                                            </i>
+                                            Oqim yaratish
+                                        </button>
+
+                                            <a href="https://t.me/Alijahon_bot/2714" target="_blank" class="product-btn secondary">
+                                                <i><img width="15" height="15" src="https://img.icons8.com/ios/50/1A1A1A/file-2.png" alt="file-2"/></i> Reklama Posti
+                                            </a>
+
+                                        <a href="{% url 'product-detail' product.slug %}" target="_blank" class="product-btn secondary">
+                                            <i><img width="17" height="17" src="https://img.icons8.com/ios/50/1A1A1A/visible--v1.png" alt="visible--v1"/></i> Batafsil
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+
+                </div>
+
+
+                    <div class="mt-4">
+
+
+    <style>
+        .pagination-modern {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+            padding: 20px 0;
+        }
+
+        .pagination-modern .page-item {
+            list-style: none;
+        }
+
+        .pagination-modern .page-link {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 42px;
+            height: 42px;
+            padding: 0 16px;
+            background: white;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            color: #475569;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .pagination-modern .page-link:hover {
+            background: #f8fafc;
+            border-color: #667eea;
+            color: #667eea;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px -1px rgba(102, 126, 234, 0.2);
+        }
+
+        .pagination-modern .page-item.active .page-link {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-color: transparent;
+            color: white;
+            cursor: default;
+            pointer-events: none;
+        }
+
+        .pagination-modern .page-item.disabled .page-link {
+            opacity: 0.5;
+            cursor: not-allowed;
+            pointer-events: none;
+        }
+
+        .pagination-modern .page-link.prev-next {
+            padding: 0 20px;
+        }
+
+        .pagination-modern .page-link i {
+            font-size: 16px;
+        }
+
+        @media (max-width: 768px) {
+            .pagination-modern {
+                gap: 6px;
+                padding: 15px 0;
+            }
+
+            .pagination-modern .page-link {
+                min-width: 38px;
+                height: 38px;
+                padding: 0 12px;
+                font-size: 14px;
+            }
+
+            .pagination-modern .page-link.prev-next {
+                padding: 0 14px;
+            }
+        }
+    </style>
+
+    <nav aria-label="Pagination">
+        <ul class="pagination-modern">
+
+                <li class="page-item disabled">
+                    <span class="page-link prev-next">
+                        <i class="icofont-rounded-left"></i> Oldingisi
+                    </span>
+                </li>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                        <li class="page-item active disabled">
+                            <a class="page-link" href="?page=1">1</a>
+                        </li>
+
+
+
+
+
+                        <li class="page-item ">
+                            <a class="page-link" href="?page=2">2</a>
+                        </li>
+
+
+
+
+
+                        <li class="page-item ">
+                            <a class="page-link" href="?page=3">3</a>
+                        </li>
+
+                <li class="page-item">
+                    <a class="page-link prev-next" href="?page=2">
+                        Keyingisi <i class="icofont-rounded-right"></i>
+                    </a>
+                </li>
+
+        </ul>
+    </nav>
+    <script>
+    document.addEventListener("DOMContentLoaded", function () {
+        document.querySelectorAll(".btn_open_modal").forEach(function (button) {
+            button.addEventListener("click", function () {
+                const productId = this.dataset.productId;
+
+                document.getElementById("hidden_product").value = productId;
+            });
+        });
+    });
+    </script>
+    </div>
+</div>
+{% endblock %}
